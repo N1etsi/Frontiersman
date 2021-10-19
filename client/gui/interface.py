@@ -21,13 +21,14 @@ class guiGame():
         self.centerX = 3*self.W/8 - self.wTile/2
         self.centerY = 3*self.H/8 - self.hTile/3
 
-        self.margin = 10
+        self.margin = 6
         self.yOff = 3*(self.hTile+self.margin)/4
         self.xOff = (self.wTile+self.margin)/2
 
         self.board_size=(self.W, self.H)
         self.screen= pygame.display.set_mode(self.board_size)
         pygame.display.set_caption('Frontiersman')
+        self.screen.fill([37,100,184])
         self.tile_size=(self.wTile,self.hTile)
         self.number_size=(self.wTile/3,self.hTile/3)
 
