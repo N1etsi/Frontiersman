@@ -5,6 +5,8 @@ class Board:
     def __init__(self, size=3):
         self.sideSize = size
         self.tiles = []
+        self.roads = []
+        self.settlements = []
         self.getRandomBoard(size)
 
 
@@ -19,14 +21,13 @@ class Board:
                 if z < S and z > -S:
                     #var change so it starts the list from the top
                     coord = [y, -x-y]
-                    print(coord)
+
                     type = game.getRandomResource(des)
                     if type == game.Resources.DESERT:
                             des = 1
 
                     self.tiles.append(game.Tile(coord, type))
 
-        print(len(self.tiles))
         if des == 0:
             while True:
                 x = random.randint(-S+1,S-1)
@@ -41,11 +42,16 @@ class Board:
 
         return self.tiles
 
+    def placeRoad(self, player, tile, dir):
+        newRoad = game.Road(player, tile, dir)
+        self.roads.append(newRoad)
 
 
     def getTile(self, coord):
         return next((tile for tile in self.tiles if tile.coord == coord), None)
 
+
+#GP Methods
 def axis3to2(coord):
     z = -coord[0]-coord[1]
     coord.append(z)
@@ -58,5 +64,7 @@ def axis3to2(coord):
 if __name__=="__main__":
 
     board = Board(2)
-    for tile in board.tiles:
-        print(tile.type, axis3to2(tile.coord))
+    board.placeRoad(game.Players.WHITE, board.getTile([0, -1]), 1)
+
+    for road in board.roads:
+        print(road.tile.coord, road.dir)
