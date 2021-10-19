@@ -27,6 +27,7 @@ class Players(Enum):
     BLACK = 10
 
 
+
 class Tile():
     def __init__(self):
         self.coord = None
