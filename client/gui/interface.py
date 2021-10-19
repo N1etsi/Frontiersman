@@ -3,7 +3,6 @@ import time
 from enum import Enum
 import random
 import math
-
 import os,sys,inspect
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
@@ -19,15 +18,22 @@ def init_display():
     wTile = 50
     hTile = 58
 
-    #Init Board
-    pygame.init()
+    centerX = 3*W/8
+    centerY = 3*H/8
+
+    margin = 10
+    yOff = 3*(hTile+margin)/4
+    xOff = (wTile+margin)/2
+
     size=75
+    
     board_size=(W, H)
     screen= pygame.display.set_mode(board_size)
     pygame.display.set_caption('Catan')
     tile_size=(wTile,hTile)
 
     #Init Tiles
+
     sea = pygame.image.load("./client/gui/assets/tiles/sea.jpg")
     sea = pygame.transform.scale(sea, tile_size)
 
@@ -59,12 +65,6 @@ def init_display():
         }
 
     print('Init finished!!!')
-
-    centerX = 4*W/8
-    centerY = 4*H/8
-
-    yOff = 3*hTile/4
-    xOff = wTile/2
 
     gameBoard = board.Board(5)
 

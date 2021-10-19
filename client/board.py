@@ -1,15 +1,15 @@
 import game as game
 import random
 
+
 class Board:
-    def __init__(self, size=3):
+    def __init__(self, size=3, nplayers=1):
         self.sideSize = size
+        self.nplayers = nplayers
         self.tiles = []
         self.roads = []
         self.settlements = []
         self.getRandomBoard(size)
-
-
 
 
     def getRandomBoard(self, S):
@@ -51,13 +51,13 @@ class Board:
         return next((tile for tile in self.tiles if tile.coord == coord), None)
 
 
+
+
 #GP Methods
 def axis3to2(coord):
     z = -coord[0]-coord[1]
     coord.append(z)
     return coord
-
-
 
 
 
