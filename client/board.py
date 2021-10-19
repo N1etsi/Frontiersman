@@ -50,6 +50,10 @@ class Board:
     def getTile(self, coord):
         return next((tile for tile in self.tiles if tile.coord == coord), None)
 
+    def countLongestRoad(self, player):
+        
+
+
 
 
 

@@ -10,72 +10,116 @@ sys.path.insert(1, parent_dir)
 import board
 import game
 
+class guiGame():
+    def __init__(self):
+        self.W = 1080
+        self.H = 720
 
-def init_display():
-    W = 720
-    H = 480
+        self.wTile = 50
+        self.hTile = 58
 
-    wTile = 50
-    hTile = 58
+        self.centerX = 3*self.W/8 - self.wTile/2
+        self.centerY = 3*self.H/8 - self.hTile/3
 
-    centerX = 3*W/8
-    centerY = 3*H/8
+        self.margin = 10
+        self.yOff = 3*(self.hTile+self.margin)/4
+        self.xOff = (self.wTile+self.margin)/2
 
-    margin = 10
-    yOff = 3*(hTile+margin)/4
-    xOff = (wTile+margin)/2
+        self.board_size=(self.W, self.H)
+        self.screen= pygame.display.set_mode(self.board_size)
+        pygame.display.set_caption('Frontiersman')
+        self.tile_size=(self.wTile,self.hTile)
+        self.number_size=(self.wTile/3,self.hTile/3)
 
-    size=75
-    
-    board_size=(W, H)
-    screen= pygame.display.set_mode(board_size)
-    pygame.display.set_caption('Catan')
-    tile_size=(wTile,hTile)
+        self.initAssets()
 
-    #Init Tiles
+        gameBoard = board.Board(5)
 
-    sea = pygame.image.load("./client/gui/assets/tiles/sea.jpg")
-    sea = pygame.transform.scale(sea, tile_size)
+        for tile in gameBoard.tiles:
+            x = self.centerX + (tile.coord[0]-tile.coord[1])*self.xOff
+            y = self.centerY + (tile.coord[0]+tile.coord[1])*self.yOff
 
-    desert = pygame.image.load("./client/gui/assets/tiles/desert.gif")
-    desert = pygame.transform.scale(desert, tile_size)
+            self.screen.blit(self.typedict[tile.type], (x,y))
 
-    brick = pygame.image.load("./client/gui/assets/tiles/brick.gif")
-    brick = pygame.transform.scale(brick, tile_size)
+            x_num = x + 20
+            y_num = y + 20
+            self.screen.blit(self.num_list[tile.num],(x_num,y_num))
 
-    grain = pygame.image.load("./client/gui/assets/tiles/grain.gif")
-    grain = pygame.transform.scale(grain, tile_size)
+        pygame.display.flip()
+        time.sleep(10)
 
-    lumber = pygame.image.load("./client/gui/assets/tiles/lumber.gif")
-    lumber = pygame.transform.scale(lumber, tile_size)
+    def initAssets(self):
+        self.initTiles()
+        self.initNumbers()
 
-    ore = pygame.image.load("./client/gui/assets/tiles/ore.gif")
-    ore = pygame.transform.scale(ore, tile_size)
+    def initTiles(self):
+        self.sea = pygame.image.load("./client/gui/assets/tiles/sea.jpg")
+        self.sea = pygame.transform.scale(self.sea, self.tile_size)
 
-    wool = pygame.image.load("./client/gui/assets/tiles/wool.gif")
-    wool = pygame.transform.scale(wool, tile_size)
+        self.desert = pygame.image.load("./client/gui/assets/tiles/desert.gif")
+        self.desert = pygame.transform.scale(self.desert, self.tile_size)
 
-    typedict = {
-          game.Resources.DESERT: desert,
-          game.Resources.WOOL: wool,
-          game.Resources.GRAIN: grain,
-          game.Resources.BRICK: brick,
-          game.Resources.LUMBER: lumber,
-          game.Resources.ORE: ore
-        }
+        self.brick = pygame.image.load("./client/gui/assets/tiles/brick.gif")
+        self.brick = pygame.transform.scale(self.brick, self.tile_size)
 
-    print('Init finished!!!')
+        self.grain = pygame.image.load("./client/gui/assets/tiles/grain.gif")
+        self.grain = pygame.transform.scale(self.grain, self.tile_size)
 
-    gameBoard = board.Board(5)
+        self.lumber = pygame.image.load("./client/gui/assets/tiles/lumber.gif")
+        self.lumber = pygame.transform.scale(self.lumber, self.tile_size)
 
-    for tile in gameBoard.tiles:
-        x = centerX + (tile.coord[0]-tile.coord[1])*xOff
-        y = centerY + (tile.coord[0]+tile.coord[1])*yOff
+        self.ore = pygame.image.load("./client/gui/assets/tiles/ore.gif")
+        self.ore = pygame.transform.scale(self.ore, self.tile_size)
 
-        screen.blit(typedict[tile.type], (x,y))
+        self.wool = pygame.image.load("./client/gui/assets/tiles/wool.gif")
+        self.wool = pygame.transform.scale(self.wool, self.tile_size)
 
+        self.typedict = {
+              game.Resources.DESERT: self.desert,
+              game.Resources.WOOL: self.wool,
+              game.Resources.GRAIN: self.grain,
+              game.Resources.BRICK: self.brick,
+              game.Resources.LUMBER: self.lumber,
+              game.Resources.ORE: self.ore
+            }
 
-    pygame.display.flip()
-    time.sleep(10)
+    def initNumbers(self):
+        self.one = pygame.image.load("./client/gui/assets/numbers/one.png")
+        self.one = pygame.transform.scale(self.one, self.number_size)
 
-init_display()
+        self.two = pygame.image.load("./client/gui/assets/numbers/two.png")
+        self.two = pygame.transform.scale(self.two, self.number_size)
+
+        self.three = pygame.image.load("./client/gui/assets/numbers/three.png")
+        self.three = pygame.transform.scale(self.three, self.number_size)
+
+        self.four = pygame.image.load("./client/gui/assets/numbers/four.png")
+        self.four = pygame.transform.scale(self.four, self.number_size)
+
+        self.five = pygame.image.load("./client/gui/assets/numbers/five.png")
+        self.five = pygame.transform.scale(self.five, self.number_size)
+
+        self.six = pygame.image.load("./client/gui/assets/numbers/six.png")
+        self.six = pygame.transform.scale(self.six, self.number_size)
+
+        self.seven = pygame.image.load("./client/gui/assets/numbers/seven.png")
+        self.seven = pygame.transform.scale(self.seven, self.number_size)
+
+        self.eigth = pygame.image.load("./client/gui/assets/numbers/eigth.png")
+        self.eigth = pygame.transform.scale(self.eigth, self.number_size)
+
+        self.nine = pygame.image.load("./client/gui/assets/numbers/nine.png")
+        self.nine = pygame.transform.scale(self.nine, self.number_size)
+
+        self.ten = pygame.image.load("./client/gui/assets/numbers/ten.png")
+        self.ten = pygame.transform.scale(self.ten, self.number_size)
+
+        self.eleven = pygame.image.load("./client/gui/assets/numbers/eleven.png")
+        self.eleven = pygame.transform.scale(self.eleven, self.number_size)
+
+        self.twelve = pygame.image.load("./client/gui/assets/numbers/twelve.png")
+        self.twelve = pygame.transform.scale(self.twelve, self.number_size)
+
+        self.num_list=[self.one,self.one,self.two,self.three,self.four,self.five,self.six,self.seven,self.eigth,self.nine,self.ten,self.eleven,self.twelve]
+
+g = guiGame()
