@@ -1,4 +1,4 @@
-import game
+import elements
 import board
 
 #player, not user
