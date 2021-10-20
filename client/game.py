@@ -39,16 +39,20 @@ class Tile():
         self.type = type
         self.num = random.randint(1, 12)
 
+class Vertex():
+    def __init__(self, i, j, k):
+        self.i = i
+        self.j = j
+        self.k = k
 
 #side of the road relative to tile is expressed with the dir var (direction)
 #0, 1 and 2 are possible values, top left, top and top right
 #the bottom of ones are the top of the others, so only 3 are necessary
 class Road():
-    def __init__(self, player, tile, dir):
-        self.tile = tile
-        self.dir = dir
-
+    def __init__(self, player, vertPair):
         self.player = player
+        self.vertPair = vertPair
+
 
 #settlement coords are the ones of the tile on their top
 #easy to calculate the other 2 this way, (add one to z and either -1 to x or y while the other is 0)

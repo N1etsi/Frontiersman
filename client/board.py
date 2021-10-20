@@ -42,16 +42,35 @@ class Board:
 
         return self.tiles
 
-    def placeRoad(self, player, tile, dir):
-        newRoad = game.Road(player, tile, dir)
+    def placeRoad(self, player, vertPair):
+        newRoad = game.Road(player, vertPair)
         self.roads.append(newRoad)
+        plaer.addedRoad(newRoad)
 
 
     def getTile(self, coord):
         return next((tile for tile in self.tiles if tile.coord == coord), None)
 
     def countLongestRoad(self, player):
-        
+        for road in self.roads:
+            if road.player == player:
+                len = 0
+                searched = []
+                search.append(road)
+
+
+    def searchRoadNei(self, player, road, path):
+        vert1 = road.vertPair[0]
+        vert2 = road.vertPair[1]
+        #send email to LPR about this
+
+
+
+
+
+
+
+
 
 
 
@@ -62,6 +81,8 @@ def axis3to2(coord):
     z = -coord[0]-coord[1]
     coord.append(z)
     return coord
+
+def tiles
 
 
 
