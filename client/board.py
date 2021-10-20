@@ -1,5 +1,6 @@
-import game as game
+import elements
 import random
+import player
 
 
 class Board:
@@ -22,11 +23,11 @@ class Board:
                     #var change so it starts the list from the top
                     coord = [y, -x-y]
 
-                    type = game.getRandomResource(des)
-                    if type == game.Resources.DESERT:
+                    type = elements.getRandomResource(des)
+                    if type == elements.Resources.DESERT:
                             des = 1
 
-                    self.tiles.append(game.Tile(coord, type))
+                    self.tiles.append(elements.Tile(coord, type))
 
         if des == 0:
             while True:
@@ -38,37 +39,64 @@ class Board:
 
 
             desertTile = self.getTile([x,y])
-            desertTile.type = game.Resources.DESERT
+            desertTile.type = elements.Resources.DESERT
 
         return self.tiles
 
-    def placeRoad(self, player, tile, dir):
-        newRoad = game.Road(player, tile, dir)
+    #roads are placed with the negative point first
+    def placeRoad(self, player, vertPair):
+        newRoad = elements.Road(player, vertPair)
         self.roads.append(newRoad)
+        #player.addedRoad(newRoad)
+
+        return newRoad
 
 
     def getTile(self, coord):
         return next((tile for tile in self.tiles if tile.coord == coord), None)
 
     def countLongestRoad(self, player):
-        
+        for road in self.roads:
+            if road.player == player:
+                len = 0
+                searched = []
+                search.append(road)
+
+
+    def searchRoadNei(self, player, road):
+        vert0 = road.vertPair[0]
+        vert1 = road.vertPair[1]
+
+        if vert0.polarity():
+            indSearch = 1
+        else:
+            indSearch = 0
+
+        nei = []
+
+        for road in board.roads:
+            if road.player == player:
+                if road.vertPair[indSearch]==vert0 or road.vertPair[1-indSearch]==vert1:
+                    nei.append(road)
+
+        return nei
 
 
 
-
-
-#GP Methods
-def axis3to2(coord):
-    z = -coord[0]-coord[1]
-    coord.append(z)
-    return coord
+#def tiles
 
 
 
 if __name__=="__main__":
 
     board = Board(2)
-    board.placeRoad(game.Players.WHITE, board.getTile([0, -1]), 1)
+
+    road1=board.placeRoad(elements.Players.WHITE, [elements.Vertex(0,0,0), elements.Vertex(0,0,-1)])
+    road2=board.placeRoad(elements.Players.WHITE, [elements.Vertex(0,0,-1), elements.Vertex(1,0,-1)])
+
 
     for road in board.roads:
-        print(road.tile.coord, road.dir)
+        print(road.vertPair[0].toString(), road.vertPair[1].toString())
+
+
+    print(board.searchRoadNei(elements.Players.WHITE, road2)[1].vertPair[0].toString())

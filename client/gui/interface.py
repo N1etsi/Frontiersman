@@ -8,7 +8,7 @@ current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfra
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(1, parent_dir)
 import board
-import game
+import elements
 
 class guiGame():
     def __init__(self):
@@ -76,12 +76,12 @@ class guiGame():
         self.wool = pygame.transform.scale(self.wool, self.tile_size)
 
         self.typedict = {
-              game.Resources.DESERT: self.desert,
-              game.Resources.WOOL: self.wool,
-              game.Resources.GRAIN: self.grain,
-              game.Resources.BRICK: self.brick,
-              game.Resources.LUMBER: self.lumber,
-              game.Resources.ORE: self.ore
+              elements.Resources.DESERT: self.desert,
+              elements.Resources.WOOL: self.wool,
+              elements.Resources.GRAIN: self.grain,
+              elements.Resources.BRICK: self.brick,
+              elements.Resources.LUMBER: self.lumber,
+              elements.Resources.ORE: self.ore
             }
 
     def initNumbers(self):
