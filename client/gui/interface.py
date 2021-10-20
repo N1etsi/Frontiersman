@@ -15,8 +15,8 @@ class guiGame():
         self.W = 1080
         self.H = 720
 
-        self.wTile = 50
-        self.hTile = 58
+        self.wTile = 80
+        self.hTile = 80*1.16 #1.16 * self.wTile
 
         self.centerX = 3*self.W/8 - self.wTile/2
         self.centerY = 3*self.H/8 - self.hTile/3
@@ -42,8 +42,8 @@ class guiGame():
 
             self.screen.blit(self.typedict[tile.type], (x,y))
 
-            x_num = x + 20
-            y_num = y + 20
+            x_num = x + self.wTile/3
+            y_num = y + self.hTile/10
             self.screen.blit(self.num_list[tile.num],(x_num,y_num))
 
         pygame.display.flip()
