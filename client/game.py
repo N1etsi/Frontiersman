@@ -39,11 +39,40 @@ class Tile():
         self.type = type
         self.num = random.randint(1, 12)
 
+    def axis2to3(self, coord):
+        z = -coord[0]-coord[1]
+        coord.append(z)
+        return coord
+
+    def axis3(self):
+        newcoord.append(coord[0])
+        newcoord.append(coord[1])
+        z = -coord[0]-coord[1]
+        newcoord.append(z)
+        return newcoord
+
+
 class Vertex():
     def __init__(self, i, j, k):
         self.i = i
         self.j = j
         self.k = k
+
+        sum = self.i+self.j+self.k
+        if sum > 0 or sum < -1:
+            print("invalid point")
+            return None
+
+    #True for positive, False for negative
+    #True when neighbours align with the positive axis reference
+    def polarity(self):
+        if (self.i+self.j+self.k) == -1:
+            return True
+        else:
+            return False
+
+    def toString(self):
+        return str(self.i)+','+str(self.j)+','+str(self.k)+'||'
 
 #side of the road relative to tile is expressed with the dir var (direction)
 #0, 1 and 2 are possible values, top left, top and top right
@@ -52,6 +81,13 @@ class Road():
     def __init__(self, player, vertPair):
         self.player = player
         self.vertPair = vertPair
+
+        #enforce polarity
+        if self.vertPair[0].polarity():
+            temp = self.vertPair[0]
+            self.vertPair[0] = self.vertPair[1]
+            self.vertPair[1] = temp
+
 
 
 #settlement coords are the ones of the tile on their top

@@ -1,5 +1,6 @@
 import game as game
 import random
+import player
 
 
 class Board:
@@ -42,10 +43,13 @@ class Board:
 
         return self.tiles
 
+    #roads are placed with the negative point first
     def placeRoad(self, player, vertPair):
         newRoad = game.Road(player, vertPair)
         self.roads.append(newRoad)
-        plaer.addedRoad(newRoad)
+        #player.addedRoad(newRoad)
+
+        return newRoad
 
 
     def getTile(self, coord):
@@ -59,37 +63,40 @@ class Board:
                 search.append(road)
 
 
-    def searchRoadNei(self, player, road, path):
-        vert1 = road.vertPair[0]
-        vert2 = road.vertPair[1]
-        #send email to LPR about this
+    def searchRoadNei(self, player, road):
+        vert0 = road.vertPair[0]
+        vert1 = road.vertPair[1]
+
+        if vert0.polarity():
+            indSearch = 1
+        else:
+            indSearch = 0
+
+        nei = []
+
+        for road in board.roads:
+            if road.player == player:
+                if road.vertPair[indSearch]==vert0 or road.vertPair[1-indSearch]==vert1:
+                    nei.append(road)
+
+        return nei
 
 
 
-
-
-
-
-
-
-
-
-
-
-#GP Methods
-def axis3to2(coord):
-    z = -coord[0]-coord[1]
-    coord.append(z)
-    return coord
-
-def tiles
+#def tiles
 
 
 
 if __name__=="__main__":
 
     board = Board(2)
-    board.placeRoad(game.Players.WHITE, board.getTile([0, -1]), 1)
+
+    road1=board.placeRoad(game.Players.WHITE, [game.Vertex(0,0,0), game.Vertex(0,0,-1)])
+    road2=board.placeRoad(game.Players.WHITE, [game.Vertex(0,0,-1), game.Vertex(1,0,-1)])
+
 
     for road in board.roads:
-        print(road.tile.coord, road.dir)
+        print(road.vertPair[0].toString(), road.vertPair[1].toString())
+
+
+    print(board.searchRoadNei(game.Players.WHITE, road2)[1].vertPair[0].toString())
