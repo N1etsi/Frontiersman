@@ -84,7 +84,12 @@ class Board:
         pol = 0
 
         stack = []
+
+
+
         negLength, stack = self.recWorker(newR, 0, 0, stack)
+
+        print("eree")
         posLength, stack = self.recWorker(newR, 1, 0, stack)
 
         print(negLength,posLength)
@@ -94,13 +99,17 @@ class Board:
     #Recursive worker to find longest path
     def recWorker(self, road, polarity, length, stack):
         neis = self.searchNextRoadPolar(road, polarity)
+        for r in neis:
+            print(r.toString())
+        print(" ")
         maxL = 0
         maxStack = []
         stack.append(road)
 
 
         if len(neis) <= 0:
-            return length, maxStack
+            newStack = copy.deepcopy(stack)
+            return length, newStack
         else:
             for newR in neis:
                 if newR not in stack:
@@ -109,7 +118,7 @@ class Board:
                     if L > maxL:
                         maxL = L
                         maxStack = M
-                
+
 
         return maxL, maxStack
 
@@ -128,4 +137,4 @@ if __name__=="__main__":
     #road7=board.placeRoad(plr, [elements.Vertex(-1,1,-1), elements.Vertex(0,1,-1)])
     road7=board.placeRoad(plr, [elements.Vertex(0,0,-1), elements.Vertex(0,1,-1)])
 
-    print(board.getLongestRoad(plr, road7))
+    print(board.getLongestRoad(plr, road5))
