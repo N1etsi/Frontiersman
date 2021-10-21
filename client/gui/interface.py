@@ -86,7 +86,8 @@ class guiGame():
             self.screen.blit(tile.tilesurface, (tile.tilerect[0],tile.tilerect[1]))
             x_num = tile.tilerect[0] + tile.tilerect[2]/3
             y_num = tile.tilerect[1] + tile.tilerect[3]/10
-            self.screen.blit(tile.numsurface,(x_num,y_num))
+            if tile.type != elements.Resources.DESERT:
+                self.screen.blit(tile.numsurface,(x_num,y_num))
         pygame.display.flip()
 
     def pan(self):
@@ -206,7 +207,7 @@ class guiGame():
         self.twelve = pygame.image.load("./client/gui/assets/numbers/twelve.png")
         self.twelve = pygame.transform.scale(self.twelve, self.number_size)
 
-        self.num_list=[self.one,self.one,self.two,self.three,self.four,self.five,self.six,self.seven,self.eigth,self.nine,self.ten,self.eleven,self.twelve]
+        self.num_list=[None,self.one,self.two,self.three,self.four,self.five,self.six,self.seven,self.eigth,self.nine,self.ten,self.eleven,self.twelve]
 
     def initRoads(self):
         self.black = pygame.image.load("./client/gui/assets/roads/black.png")
