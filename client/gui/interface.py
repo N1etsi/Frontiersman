@@ -12,6 +12,7 @@ import elements
 
 class guiGame():
     def __init__(self):
+        self.run=True
         self.W = 1080
         self.H = 720
 
@@ -26,6 +27,7 @@ class guiGame():
         self.xOff = (self.wTile+self.margin)/2
 
         self.board_size=(self.W, self.H)
+        self.zoomlimit=self.wTile
         self.screen= pygame.display.set_mode(self.board_size, pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE)
         pygame.display.set_caption('Frontiersman')
         self.screen.fill([37,100,184])
@@ -43,38 +45,45 @@ class guiGame():
 
     def initWindow(self):
         for tile in self.gameBoard.tiles:
-            x = self.centerX + (tile.coord[0]-tile.coord[1])*self.xOff
-            y = self.centerY + (tile.coord[0]+tile.coord[1])*self.yOff
-            tile.tilerect = (x, y, self.wTile, self.hTile)
+            x = float(self.centerX + (tile.coord[0]-tile.coord[1])*self.xOff)
+            y = float(self.centerY + (tile.coord[0]+tile.coord[1])*self.yOff)
+            tile.tilerect = (float(x), float(y), float(self.wTile), float(self.hTile))
             tile.tilesurface = self.typedict[tile.type]
 
             x_num = x + self.wTile/3
             y_num = y + self.hTile/10
             self.screen.blit(self.num_list[tile.num],(x_num,y_num))
 
-    def main(self):
-        run=True
-        while run:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
+    def windowevents(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.run = False
 
-                elif event.type == pygame.VIDEORESIZE:
-                    self.screen = pygame.display.set_mode(event.dict['size'], pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE)
+            elif event.type == pygame.VIDEORESIZE:
+                self.screen = pygame.display.set_mode(event.dict['size'], pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE)
+                for tile in self.gameBoard.tiles:
+                    tile.tilesurface = pygame.transform.smoothscale(self.typedict[tile.type], tile.tilerect.size)
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if (event.button == 5 and self.zoomlimit > 0.1*self.wTile or event.button == 4 and self.zoomlimit < 2*self.wTile):
+                    zoom = 1.5 if event.button == 4 else 0.75
+                    mx, my = event.pos
                     for tile in self.gameBoard.tiles:
-                        tile.tilesurface = pygame.transform.smoothscale(self.typedict[tile.type], tile.tilerect.size)
+                        left   = float(mx + (tile.tilerect[0] - mx) * zoom)
+                        print(left)
+                        right  = float(mx + (tile.tilerect[0] + tile.tilerect[2] - mx) * zoom)
+                        top    = float(my + (tile.tilerect[1] - my) * zoom)
+                        bottom = float(my + (tile.tilerect[1] + tile.tilerect[3] - my) * zoom)
+                        self.zoomlimit = right-left
+                        tile.tilerect = (float(left), float(top), float(right - left), float(bottom - top))
+                        print(tile.tilerect)
+                        tile.tilesurface = pygame.transform.smoothscale(self.typedict[tile.type], (tile.tilerect[2],tile.tilerect[3]))
 
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 4 or event.button == 5:
-                        zoom = 1.5 if event.button == 4 else 0.75
-                        mx, my = event.pos
-                        for tile in self.gameBoard.tiles:
-                            left   = mx + (tile.tilerect[0] - mx) * zoom
-                            right  = mx + (tile.tilerect[0] + tile.tilerect[2] - mx) * zoom
-                            top    = my + (tile.tilerect[1] - my) * zoom
-                            bottom = my + (tile.tilerect[1] + tile.tilerect[3] - my) * zoom
-                            tile.tilerect = pygame.Rect(left, top, right-left, bottom-top)
-                            tile.tilesurface = pygame.transform.smoothscale(self.typedict[tile.type], tile.tilerect.size)
+    def main(self):
+
+        self.run=True
+        while self.run:
+            self.windowevents()
             self.screen.fill([37,100,184])
             for tile in self.gameBoard.tiles:
                 self.screen.blit(tile.tilesurface, (tile.tilerect[0],tile.tilerect[1]))
