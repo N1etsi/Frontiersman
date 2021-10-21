@@ -26,38 +26,76 @@ class guiGame():
         self.xOff = (self.wTile+self.margin)/2
 
         self.board_size=(self.W, self.H)
-        self.screen= pygame.display.set_mode(self.board_size)
+        self.screen= pygame.display.set_mode(self.board_size, pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE)
         pygame.display.set_caption('Frontiersman')
         self.screen.fill([37,100,184])
         self.tile_size=(self.wTile,self.hTile)
         self.number_size=(self.wTile/3,self.hTile/3)
-        self.road_size=(self.wTile/2,self.margin)
+        self.road_size=(self.margin,self.wTile/2)
 
         self.initAssets()
 
-        gameBoard = board.Board(5)
+        self.gameBoard = board.Board(5)
 
-        for tile in gameBoard.tiles:
+        self.initWindow()
+
+        self.main()
+
+    def initWindow(self):
+        for tile in self.gameBoard.tiles:
             x = self.centerX + (tile.coord[0]-tile.coord[1])*self.xOff
             y = self.centerY + (tile.coord[0]+tile.coord[1])*self.yOff
-            self.screen.blit(self.typedict[tile.type], (x,y))
+            tile.tilerect = (x, y, self.wTile, self.hTile)
+            tile.tilesurface = self.typedict[tile.type]
 
             x_num = x + self.wTile/3
             y_num = y + self.hTile/10
             self.screen.blit(self.num_list[tile.num],(x_num,y_num))
 
-            x_road1= x - self.margin
-            y_road1= y + self.hTile/4
+    def main(self):
+        run=True
+        while run:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
 
-            x_road23= x + self.wTile/2
-            y_road23= y
+                elif event.type == pygame.VIDEORESIZE:
+                    self.screen = pygame.display.set_mode(event.dict['size'], pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE)
+                    for tile in self.gameBoard.tiles:
+                        tile.tilesurface = pygame.transform.smoothscale(self.typedict[tile.type], tile.tilerect.size)
 
-            self.screen.blit(self.gray,(x_road1,y_road1))
-            self.screen.blit(self.gray60,(x_road23,y_road23))
-            self.screen.blit(self.gray300,(x_road23,y_road23))
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 4 or event.button == 5:
+                        zoom = 1.5 if event.button == 4 else 0.75
+                        mx, my = event.pos
+                        for tile in self.gameBoard.tiles:
+                            left   = mx + (tile.tilerect[0] - mx) * zoom
+                            right  = mx + (tile.tilerect[0] + tile.tilerect[2] - mx) * zoom
+                            top    = my + (tile.tilerect[1] - my) * zoom
+                            bottom = my + (tile.tilerect[1] + tile.tilerect[3] - my) * zoom
+                            tile.tilerect = pygame.Rect(left, top, right-left, bottom-top)
+                            tile.tilesurface = pygame.transform.smoothscale(self.typedict[tile.type], tile.tilerect.size)
+            self.screen.fill([37,100,184])
+            for tile in self.gameBoard.tiles:
+                self.screen.blit(tile.tilesurface, (tile.tilerect[0],tile.tilerect[1]))
 
-        pygame.display.flip()
-        time.sleep(10)
+
+            # x_road1= x - self.margin
+            # y_road1= y + self.hTile/4
+            #
+            # x_road23= x + self.wTile/2
+            # y_road23= y
+            #
+            # self.screen.blit(self.gray,(x_road1,y_road1))
+            # self.screen.blit(self.gray60,(x_road23,y_road23))
+            # self.screen.blit(self.gray300,(x_road23,y_road23))
+
+            ##roads
+            # pygame.draw.line(self.screen, (0, 255, 0), (x - self.margin/2, y + self.hTile/4), (x - self.margin/2, y + 3*self.hTile/4), self.margin)
+            # pygame.draw.line(self.screen, (0, 255, 0), (x - self.margin/2, y + self.hTile/4), (x - self.margin/2, y + 3*self.hTile/4), self.margin)
+            # pygame.draw.line(self.screen, (0, 255, 0), (x - self.margin/2, y + self.hTile/4), (x - self.margin/2, y + 3*self.hTile/4), self.margin)
+            pygame.display.flip()
+        pygame.quit()
 
     def initAssets(self):
         self.initTiles()
@@ -65,25 +103,25 @@ class guiGame():
         self.initRoads()
 
     def initTiles(self):
-        self.sea = pygame.image.load("./client/gui/assets/tiles/sea.jpg")
+        self.sea = pygame.image.load("./client/gui/assets/tiles/sea.png")
         self.sea = pygame.transform.scale(self.sea, self.tile_size)
 
-        self.desert = pygame.image.load("./client/gui/assets/tiles/desert.gif")
+        self.desert = pygame.image.load("./client/gui/assets/tiles/desert.png")
         self.desert = pygame.transform.scale(self.desert, self.tile_size)
 
-        self.brick = pygame.image.load("./client/gui/assets/tiles/brick.gif")
+        self.brick = pygame.image.load("./client/gui/assets/tiles/brick.png")
         self.brick = pygame.transform.scale(self.brick, self.tile_size)
 
-        self.grain = pygame.image.load("./client/gui/assets/tiles/grain.gif")
+        self.grain = pygame.image.load("./client/gui/assets/tiles/grain.png")
         self.grain = pygame.transform.scale(self.grain, self.tile_size)
 
-        self.lumber = pygame.image.load("./client/gui/assets/tiles/lumber.gif")
+        self.lumber = pygame.image.load("./client/gui/assets/tiles/lumber.png")
         self.lumber = pygame.transform.scale(self.lumber, self.tile_size)
 
-        self.ore = pygame.image.load("./client/gui/assets/tiles/ore.gif")
+        self.ore = pygame.image.load("./client/gui/assets/tiles/ore.png")
         self.ore = pygame.transform.scale(self.ore, self.tile_size)
 
-        self.wool = pygame.image.load("./client/gui/assets/tiles/wool.gif")
+        self.wool = pygame.image.load("./client/gui/assets/tiles/wool.png")
         self.wool = pygame.transform.scale(self.wool, self.tile_size)
 
         self.typedict = {

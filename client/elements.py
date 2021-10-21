@@ -33,6 +33,8 @@ class Tile():
         self.coord = None
         self.type = None
         self.num = random.randint(1, 12)
+        self.tilerect=None
+        self.tilesurface=None
 
     def __init__(self, coord, type):
         self.coord = coord
