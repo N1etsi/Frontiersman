@@ -49,10 +49,7 @@ class guiGame():
             y = float(self.centerY + (tile.coord[0]+tile.coord[1])*self.yOff)
             tile.tilerect = (float(x), float(y), float(self.wTile), float(self.hTile))
             tile.tilesurface = self.typedict[tile.type]
-
-            x_num = x + self.wTile/3
-            y_num = y + self.hTile/10
-            self.screen.blit(self.num_list[tile.num],(x_num,y_num))
+            tile.numsurface = self.num_list[tile.num]
 
     def windowevents(self):
         for event in pygame.event.get():
@@ -62,31 +59,62 @@ class guiGame():
             elif event.type == pygame.VIDEORESIZE:
                 self.screen = pygame.display.set_mode(event.dict['size'], pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE)
                 for tile in self.gameBoard.tiles:
-                    tile.tilesurface = pygame.transform.smoothscale(self.typedict[tile.type], tile.tilerect.size)
+                    tile.tilesurface = pygame.transform.smoothscale(self.typedict[tile.type], (tile.tilerect[2],tile.tilerect[3]))
+                    tile.numsurface = pygame.transform.smoothscale(self.num_list[tile.num], (tile.tilerect[2]/3,tile.tilerect[3]/3))
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if (event.button == 5 and self.zoomlimit > 0.1*self.wTile or event.button == 4 and self.zoomlimit < 2*self.wTile):
                     zoom = 1.5 if event.button == 4 else 0.75
-                    mx, my = event.pos
+                    self.mx, self.my = event.pos
                     for tile in self.gameBoard.tiles:
-                        left   = float(mx + (tile.tilerect[0] - mx) * zoom)
-                        print(left)
-                        right  = float(mx + (tile.tilerect[0] + tile.tilerect[2] - mx) * zoom)
-                        top    = float(my + (tile.tilerect[1] - my) * zoom)
-                        bottom = float(my + (tile.tilerect[1] + tile.tilerect[3] - my) * zoom)
+                        left   = float(self.mx + (tile.tilerect[0] - self.mx) * zoom)
+                        right  = float(self.mx + (tile.tilerect[0] + tile.tilerect[2] - self.mx) * zoom)
+                        top    = float(self.my + (tile.tilerect[1] - self.my) * zoom)
+                        bottom = float(self.my + (tile.tilerect[1] + tile.tilerect[3] - self.my) * zoom)
                         self.zoomlimit = right-left
                         tile.tilerect = (float(left), float(top), float(right - left), float(bottom - top))
-                        print(tile.tilerect)
                         tile.tilesurface = pygame.transform.smoothscale(self.typedict[tile.type], (tile.tilerect[2],tile.tilerect[3]))
+                        tile.numsurface = pygame.transform.smoothscale(self.num_list[tile.num], (tile.tilerect[2]/3,tile.tilerect[3]/3))
+
+                if (event.button == 1):
+                    self.mx,self.my = event.pos
+                    self.pan()
+
+    def displaygame(self):
+        self.screen.fill([37,100,184])
+        for tile in self.gameBoard.tiles:
+            self.screen.blit(tile.tilesurface, (tile.tilerect[0],tile.tilerect[1]))
+            x_num = tile.tilerect[0] + tile.tilerect[2]/3
+            y_num = tile.tilerect[1] + tile.tilerect[3]/10
+            self.screen.blit(tile.numsurface,(x_num,y_num))
+        pygame.display.flip()
+
+    def pan(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if (event.button == 1):
+                        return
+            nx, ny = pygame.mouse.get_pos()
+            for tile in self.gameBoard.tiles:
+                left   = float(tile.tilerect[0] + (nx - self.mx))
+                right  = float(tile.tilerect[0] + tile.tilerect[2] + (nx - self.mx))
+                top    = float(tile.tilerect[1] + (ny - self.my))
+                bottom = float(tile.tilerect[1] + tile.tilerect[3] + (ny - self.my))
+                tile.tilerect = (float(left), float(top), float(right - left), float(bottom - top))
+                #print(tile.tilerect)
+            self.displaygame()
+            self.mx=nx
+            self.my=ny
+
 
     def main(self):
 
         self.run=True
         while self.run:
             self.windowevents()
-            self.screen.fill([37,100,184])
-            for tile in self.gameBoard.tiles:
-                self.screen.blit(tile.tilesurface, (tile.tilerect[0],tile.tilerect[1]))
+            self.displaygame()
+
 
 
             # x_road1= x - self.margin
@@ -100,10 +128,9 @@ class guiGame():
             # self.screen.blit(self.gray300,(x_road23,y_road23))
 
             ##roads
+            #pygame.draw.line(self.screen, (0, 255, 0), (x - self.margin/2, y + self.hTile/4), (x - self.margin/2, y + 3*self.hTile/4), self.margin)
             # pygame.draw.line(self.screen, (0, 255, 0), (x - self.margin/2, y + self.hTile/4), (x - self.margin/2, y + 3*self.hTile/4), self.margin)
             # pygame.draw.line(self.screen, (0, 255, 0), (x - self.margin/2, y + self.hTile/4), (x - self.margin/2, y + 3*self.hTile/4), self.margin)
-            # pygame.draw.line(self.screen, (0, 255, 0), (x - self.margin/2, y + self.hTile/4), (x - self.margin/2, y + 3*self.hTile/4), self.margin)
-            pygame.display.flip()
         pygame.quit()
 
     def initAssets(self):
