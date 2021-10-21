@@ -1,6 +1,7 @@
 import elements
 import random
 import player
+import copy
 
 
 class Board:
@@ -55,48 +56,85 @@ class Board:
     def getTile(self, coord):
         return next((tile for tile in self.tiles if tile.coord == coord), None)
 
-    def countLongestRoad(self, player):
-        for road in self.roads:
-            if road.player == player:
-                len = 0
-                searched = []
-                search.append(road)
 
+    #Gives back roads connected to the user's selected road on the specified polarity
+    def searchNextRoadPolar(self, road, polarity):
+        if polarity:
+            indP = 1
+        elif not polarity:
+            indP = 0
 
-    def searchRoadNei(self, player, road):
-        vert0 = road.vertPair[0]
-        vert1 = road.vertPair[1]
-
-        if vert0.polarity():
-            indSearch = 1
-        else:
-            indSearch = 0
+        vert = road.vertPair[indP]
 
         nei = []
 
-        for road in board.roads:
-            if road.player == player:
-                if road.vertPair[indSearch]==vert0 or road.vertPair[1-indSearch]==vert1:
-                    nei.append(road)
+        for road_iter in board.roads:
+            if road_iter.player == road.player:
+                if vert == road_iter.vertPair[indP] and road_iter != road:
+                    nei.append(road_iter)
 
         return nei
 
+    #STILL NEEDS TO KEEP VISITED STACK TO AVOID LOOPS
+    #NEEDS TO CHECK IF SETTLEMENTS ARE BUILT ON THAT VERTEX (only from other players)
+    def getLongestRoad(self, player, newR):
+        length = 1
+        negLength = 0
+        posLength = 0
+        pol = 0
+
+        stack = []
 
 
-#def tiles
+
+        negLength, stack = self.recWorker(newR, 0, 0, stack)
+
+        print("eree")
+        posLength, stack = self.recWorker(newR, 1, 0, stack)
+
+        print(negLength,posLength)
+        return length + negLength + posLength
+
+
+    #Recursive worker to find longest path
+    def recWorker(self, road, polarity, length, stack):
+        neis = self.searchNextRoadPolar(road, polarity)
+        for r in neis:
+            print(r.toString())
+        print(" ")
+        maxL = 0
+        maxStack = []
+        stack.append(road)
+
+
+        if len(neis) <= 0:
+            newStack = copy.deepcopy(stack)
+            return length, newStack
+        else:
+            for newR in neis:
+                if newR not in stack:
+                    newStack = copy.deepcopy(stack)
+                    L, M = self.recWorker(newR, 1-polarity, length+1, newStack)
+                    if L > maxL:
+                        maxL = L
+                        maxStack = M
+
+
+        return maxL, maxStack
+
 
 
 
 if __name__=="__main__":
-
     board = Board(2)
+    plr = elements.Players.WHITE
+    road1=board.placeRoad(plr, [elements.Vertex(0,0,0), elements.Vertex(0,0,-1)])
+    road2=board.placeRoad(plr, [elements.Vertex(0,0,-1), elements.Vertex(1,0,-1)])
+    road3=board.placeRoad(plr, [elements.Vertex(1,0,-2), elements.Vertex(1,0,-1)])
+    road4=board.placeRoad(plr, [elements.Vertex(1,0,-2), elements.Vertex(1,1,-2)])
+    road5=board.placeRoad(plr, [elements.Vertex(0,1,-2), elements.Vertex(1,1,-2)])
+    road6=board.placeRoad(plr, [elements.Vertex(0,1,-2), elements.Vertex(0,1,-1)])
+    #road7=board.placeRoad(plr, [elements.Vertex(-1,1,-1), elements.Vertex(0,1,-1)])
+    road7=board.placeRoad(plr, [elements.Vertex(0,0,-1), elements.Vertex(0,1,-1)])
 
-    road1=board.placeRoad(elements.Players.WHITE, [elements.Vertex(0,0,0), elements.Vertex(0,0,-1)])
-    road2=board.placeRoad(elements.Players.WHITE, [elements.Vertex(0,0,-1), elements.Vertex(1,0,-1)])
-
-
-    for road in board.roads:
-        print(road.vertPair[0].toString(), road.vertPair[1].toString())
-
-
-    print(board.searchRoadNei(elements.Players.WHITE, road2)[1].vertPair[0].toString())
+    print(board.getLongestRoad(plr, road5))

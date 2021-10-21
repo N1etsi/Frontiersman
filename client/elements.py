@@ -14,7 +14,7 @@ class ExtraResources(Enum):
     ANY = 1
 
 class Players(Enum):
-    WHITE = 0
+    NONE = 0
     BLUE = 1
     ORANGE = 2
     RED = 3
@@ -25,6 +25,7 @@ class Players(Enum):
     DARK_BLUE = 8
     DARK_RED = 9
     BLACK = 10
+    WHITE = 11
 
 
 
@@ -65,6 +66,16 @@ class Vertex():
             print("invalid point")
             return None
 
+    def __eq__(self, newV):
+        if self.i==newV.i and self.j==newV.j and self.k==newV.k:
+            return True
+        else:
+            return False
+
+    def __ne__(self, newV):
+        return not self.__eq__(newV)
+
+
     #True for positive, False for negative
     #True when neighbours align with the positive axis reference
     def polarity(self):
@@ -74,7 +85,7 @@ class Vertex():
             return False
 
     def toString(self):
-        return str(self.i)+','+str(self.j)+','+str(self.k)+'||'
+        return '('+str(self.i)+','+str(self.j)+','+str(self.k)+')'
 
 #side of the road relative to tile is expressed with the dir var (direction)
 #0, 1 and 2 are possible values, top left, top and top right
@@ -90,6 +101,20 @@ class Road():
             self.vertPair[0] = self.vertPair[1]
             self.vertPair[1] = temp
 
+    def __eq__(self, newR):
+        if self.vertPair[0] == newR.vertPair[0] and self.vertPair[1] == newR.vertPair[1]:
+            return True
+        else:
+            return False
+
+    def __ne__(self, newR):
+        return not self.__eq__(newR)
+
+    def toString(self):
+        str = "Road: "
+        str +=self.vertPair[0].toString()+" to "+self.vertPair[1].toString()
+
+        return str
 
 
 #settlement coords are the ones of the tile on their top
