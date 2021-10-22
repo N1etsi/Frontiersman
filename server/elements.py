@@ -27,27 +27,15 @@ class Players(Enum):
     BLACK = 10
     WHITE = 11
 
-class Items(Enum):
-    HOUSE = 0
-    CASTLE = 1
-
-class Item():
-    def __init__(self, type, rect, surface, mask):
-        self.type=type
-        self.rect=rect
-        self.surface=surface
-        self.mask=mask
-
-
 
 class Tile():
     def __init__(self, coord, type):
         self.coord = coord
         self.type = type
         self.num = random.randint(1, 12)
-        self.tilerect=None
-        self.tilesurface=None
-        self.numsurface=None
+        #self.tilerect=None
+        #self.tilesurface=None
+        #self.numsurface=None
 
 
     def axis2to3(self, coord):
@@ -62,6 +50,13 @@ class Tile():
         newcoord.append(z)
         return newcoord
 
+    def getRandomResource(des=0):
+        while True:
+            type = random.choice(list(Resources))
+            if not(type == Resources.DESERT and des == 1):
+                break
+
+        return type
 
 class Vertex():
     def __init__(self, i, j, k):
@@ -83,7 +78,6 @@ class Vertex():
     def __ne__(self, newV):
         return not self.__eq__(newV)
 
-
     #True for positive, False for negative
     #True when neighbours align with the positive axis reference
     def polarity(self):
@@ -95,9 +89,6 @@ class Vertex():
     def toString(self):
         return '('+str(self.i)+','+str(self.j)+','+str(self.k)+')'
 
-#side of the road relative to tile is expressed with the dir var (direction)
-#0, 1 and 2 are possible values, top left, top and top right
-#the bottom of ones are the top of the others, so only 3 are necessary
 class Road():
     def __init__(self, player, vertPair):
         self.player = player
@@ -150,11 +141,9 @@ class Hand():
         else:
             return 0
 
-
-
-#settlement coords are the ones of the tile on their top
-#easy to calculate the other 2 this way, (add one to z and either -1 to x or y while the other is 0)
 class Settlement():
+    #settlement coords are the ones of the tile on their top
+    #easy to calculate the other 2 this way, (add one to z and either -1 to x or y while the other is 0)
     def __init__(self, player, vertex):
         self.player = player
         self.loc = vertex
@@ -162,7 +151,6 @@ class Settlement():
 
     def evolveToCity(self):
         self.city = True
-
 
 class Robber():
     def __init__(self, tile):
@@ -175,27 +163,10 @@ class Robber():
         robbed = False
         if victim.hand.resourceCount > 0:
             while True:
-                res = getRandomResource(1)
+                res = Tile.getRandomResource(1)
                 if (victim.hand.removeCard(res, 1)) > 0:
                     player.hand.addCard(res)
                     robbed = True
                     break
 
         return robbed
-
-
-
-#how many
-#how to define the trade ratio
-# use of extra resources enum??
-#class Port():
-
-
-#GAME LOGIC FUN
-def getRandomResource(des=0):
-    while True:
-        type = random.choice(list(Resources))
-        if not(type == Resources.DESERT and des == 1):
-            break
-
-    return type
