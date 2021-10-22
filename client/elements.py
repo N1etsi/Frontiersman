@@ -37,6 +37,7 @@ class Tile():
         self.tilerect=None
         self.tilesurface=None
         self.numsurface=None
+        
 
     def axis2to3(self, coord):
         z = -coord[0]-coord[1]
