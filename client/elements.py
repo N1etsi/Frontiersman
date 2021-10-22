@@ -30,18 +30,13 @@ class Players(Enum):
 
 
 class Tile():
-    def __init__(self):
-        self.coord = None
-        self.type = None
-        self.num = random.randint(1, 12)
-        self.tilerect=None
-        self.tilesurface=None
-        self.numsurface=None
-
     def __init__(self, coord, type):
         self.coord = coord
         self.type = type
         self.num = random.randint(1, 12)
+        self.tilerect=None
+        self.tilesurface=None
+        self.numsurface=None
 
     def axis2to3(self, coord):
         z = -coord[0]-coord[1]
@@ -87,9 +82,6 @@ class Vertex():
 
     def toString(self):
         return '('+str(self.i)+','+str(self.j)+','+str(self.k)+')'
-
-class Placeable():
-    
 
 #side of the road relative to tile is expressed with the dir var (direction)
 #0, 1 and 2 are possible values, top left, top and top right
@@ -141,9 +133,16 @@ class Hand():
         if delt >= 0:
             self.resources[type] -= qnt
             self.resourceCount -= qnt
+            return qnt
 
         else:
-            return delt
+            return 0
+
+class Cost(Hand):
+    def __init__(self, dictCost):
+        self.player = None
+        self.costDict = dictCost
+
 
 
 #settlement coords are the ones of the tile on their top
@@ -162,8 +161,22 @@ class Robber():
     def __init__(self, tile):
         self.loc = tile
 
-    def move(tile):
+    def move(self, tile):
         self.loc = tile
+
+    def rob(self, player, victim):
+        robbed = False
+        if victim.hand.resourceCount > 0:
+            while True:
+                res = getRandomResource(1)
+                if (victim.hand.removeCard(res, 1)) > 0:
+                    player.hand.addCard(res)
+                    robbed = True
+                    break
+
+        return robbed
+
+
 
 #how many
 #how to define the trade ratio
