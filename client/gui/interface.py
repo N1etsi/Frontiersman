@@ -35,6 +35,7 @@ class guiGame():
         self.number_size=(self.wTile/3,self.hTile/3)
         self.road_size=(self.margin,self.wTile/2)
 
+
         self.initAssets()
 
         self.gameBoard = board.Board(3)
@@ -42,6 +43,8 @@ class guiGame():
         self.initWindow()
 
         self.main()
+
+
 
     def initWindow(self):
         for tile in self.gameBoard.tiles:
@@ -107,7 +110,24 @@ class guiGame():
 
         for item in self.items:
             self.screen.blit(item.surface, (item.rect[0],item.rect[1]))
+
+        self.displayhand()
         pygame.display.flip()
+
+
+
+    def displayhand(self):
+        count=0
+        for res in elements.Resources:
+            if res in self.resources:
+                #print(self.resources[res])
+                for i in range(self.resources[res]):
+                    if i>8:
+                        break
+                    self.screen.blit(self.hex[res],(50+count+10*i,600))
+                count=count+i*10+50
+
+
 
     def pan(self):
         while True:
@@ -127,12 +147,29 @@ class guiGame():
             self.mx=nx
             self.my=ny
 
+    def updateresources(self):
+        self.resources = {
+                elements.Resources.WOOL : 20,
+                elements.Resources.GRAIN : 2,
+                elements.Resources.BRICK : 8,
+                elements.Resources.LUMBER : 4,
+                elements.Resources.ORE : 5
+        }
+
+        self.hex = {
+                elements.Resources.WOOL : self.wool,
+                elements.Resources.GRAIN : self.grain,
+                elements.Resources.BRICK : self.brick,
+                elements.Resources.LUMBER : self.lumber,
+                elements.Resources.ORE : self.ore
+        }
 
     def main(self):
 
         self.run=True
         while self.run:
             self.windowevents()
+            self.updateresources()
             self.displaygame()
 
 
