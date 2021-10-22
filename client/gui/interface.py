@@ -37,7 +37,7 @@ class guiGame():
 
         self.initAssets()
 
-        self.gameBoard = board.Board(5)
+        self.gameBoard = board.Board(3)
 
         self.initWindow()
 
@@ -60,6 +60,7 @@ class guiGame():
                 self.screen = pygame.display.set_mode(event.dict['size'], pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE)
                 for tile in self.gameBoard.tiles:
                     tile.tilesurface = pygame.transform.smoothscale(self.typedict[tile.type], (tile.tilerect[2],tile.tilerect[3]))
+                    self.tilemask=pygame.mask.from_surface(tile.tilesurface)
                     tile.numsurface = pygame.transform.smoothscale(self.num_list[tile.num], (tile.tilerect[2]/3,tile.tilerect[3]/3))
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -74,11 +75,22 @@ class guiGame():
                         self.zoomlimit = right-left
                         tile.tilerect = (float(left), float(top), float(right - left), float(bottom - top))
                         tile.tilesurface = pygame.transform.smoothscale(self.typedict[tile.type], (tile.tilerect[2],tile.tilerect[3]))
+                        self.tilemask=pygame.mask.from_surface(tile.tilesurface)
                         tile.numsurface = pygame.transform.smoothscale(self.num_list[tile.num], (tile.tilerect[2]/3,tile.tilerect[3]/3))
 
-                if (event.button == 1):
+                if (event.button == 3):
                     self.mx,self.my = event.pos
                     self.pan()
+
+                if (event.button == 1):
+                    print(self.gameBoard.tiles[0].tilerect[0])
+                    print(event.pos[0])
+                    for tile in self.gameBoard.tiles:
+                        try:
+                            if self.tilemask.get_at((event.pos[0]-tile.tilerect[0], event.pos[1]-tile.tilerect[1])):
+                                print(tile.type)
+                        except IndexError:
+                            pass
 
     def displaygame(self):
         self.screen.fill([37,100,184])
@@ -94,7 +106,7 @@ class guiGame():
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONUP:
-                    if (event.button == 1):
+                    if (event.button == 3):
                         return
             nx, ny = pygame.mouse.get_pos()
             for tile in self.gameBoard.tiles:
@@ -142,6 +154,7 @@ class guiGame():
     def initTiles(self):
         self.sea = pygame.image.load("./client/gui/assets/tiles/sea.png")
         self.sea = pygame.transform.scale(self.sea, self.tile_size)
+        self.tilemask = pygame.mask.from_surface(self.sea)
 
         self.desert = pygame.image.load("./client/gui/assets/tiles/desert.png")
         self.desert = pygame.transform.scale(self.desert, self.tile_size)
