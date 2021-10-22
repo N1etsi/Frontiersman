@@ -1,6 +1,7 @@
 import random
 from enum import Enum
 import elements
+import Player
 
 class Board:
     def __init__(self, size=3, nplayers=1):
@@ -9,7 +10,13 @@ class Board:
         self.tiles = []
         self.roads = []
         self.settlements = []
+        self.players = []
         self.getRandomBoard(size)
+
+        self.bank = user.Player()
+
+        self.gameOver = False
+
 
 
     def getRandomBoard(self, S):
@@ -61,3 +68,56 @@ class Board:
                     nei.append(road_iter)
 
         return nei
+
+    #GAME LOGIC
+    def placeRoad(self, player, vertPair):
+        newRoad = elements.Road(player, vertPair)
+        board.roads.append(newRoad)
+        #player.addedRoad(newRoad)
+
+        return newRoad
+
+    def placeSettlement(self, player, vertex):
+        x = 5
+
+    def upgradeSettlement(self, player, vertex):
+        x = 5
+
+    #STILL NEEDS TO KEEP VISITED STACK TO AVOID LOOPS
+    #NEEDS TO CHECK IF SETTLEMENTS ARE BUILT ON THAT VERTEX (only from other players)
+    def getLongestRoad(self, player, newR):
+        length = 1
+        negLength = 0
+        posLength = 0
+        pol = 0
+
+        stack = []
+
+        negLength, stack = recWorker(newR, 0, 0, stack)
+        posLength, stack = recWorker(newR, 1, 0, stack)
+
+        print(negLength,posLength)
+        return length + negLength + posLength
+
+    #Recursive worker to find longest path
+    def recWorker(self, road, polarity, length, stack):
+        neis = board.searchNextRoadPolar(road, polarity)
+
+        maxL = 0
+        maxStack = []
+        stack.append(road)
+
+        if len(neis) <= 0:
+            newStack = copy.deepcopy(stack)
+            return length, newStack
+        else:
+            for newR in neis:
+                if newR not in stack:
+                    newStack = copy.deepcopy(stack)
+                    L, M = self.recWorker(newR, 1-polarity, length+1, newStack)
+                    if L > maxL:
+                        maxL = L
+                        maxStack = M
+
+
+        return maxL, maxStack

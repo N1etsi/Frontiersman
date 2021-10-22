@@ -161,14 +161,14 @@ class guiGame():
         housesurface = pygame.transform.scale(housesurface, (housecoords[2],housecoords[3]))
         #self.itemsurface=housesurface
         housemask = pygame.mask.from_surface(housesurface)
-        self.items.append(elements.Item(elements.Items.HOUSE, housecoords, housesurface, housemask))
+        #self.items.append(elements.Item(elements.Items.HOUSE, housecoords, housesurface, housemask))
 
         castlecoords=(700,600,140,100)
         castlesurface = pygame.image.load("./client/gui/assets/builds/castle.png")
         castlesurface = pygame.transform.scale(castlesurface, (castlecoords[2],castlecoords[3]))
         #self.itemsurface=housesurface
         castlemask = pygame.mask.from_surface(castlesurface)
-        self.items.append(elements.Item(elements.Items.CASTLE, castlecoords, castlesurface, castlemask))
+        #self.items.append(elements.Item(elements.Items.CASTLE, castlecoords, castlesurface, castlemask)) ## TODO:
 
     def initTiles(self):
         self.sea = pygame.image.load("./client/gui/assets/tiles/sea.png")

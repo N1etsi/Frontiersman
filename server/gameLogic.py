@@ -1,7 +1,6 @@
 import copy
 #GP Game Logic Methods
 
-
 def placeRoad(board, player, vertPair):
     newRoad = elements.Road(player, vertPair)
     board.roads.append(newRoad)

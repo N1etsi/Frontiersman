@@ -4,7 +4,7 @@ from elements import ExtraResources as ExtraResources
 
 class ActionType(Enum):
     TRADE = 0
-    BUILD = 1
+    BUY = 1
     ROLL = 3
     SPECIAL = 4
     END = 5
@@ -21,7 +21,7 @@ class Action():
         self.type = type
 
 class Buy(Action):
-    buildCost = {
+    buyCost = {
         BuyType.SETTLEMENT: {
             Resources.WOOL : 1,
             Resources.GRAIN : 1,
@@ -43,8 +43,25 @@ class Buy(Action):
         }
     }
 
+    def __init__(self, board, player, typeA, typeB, coord = None):
+        super.__init__(typeA)
+        self.build(board, player, typeB, coord)
 
-    def __init__(self, typeA):
-        super.__init__(typeA, typeB)
+    def build(self, board, player, typeB, coord):
+        if enoughResources(player, buyCost[ypeB]):
+            if typeB == self.BuyType.SETTLEMENT:
+                board.placeSettlement(player, coord)
+            elif typeB == self.BuyType.CITY:
+                board.upgradeSettlement(player, coord)
+            elif typeB == self.BuyType.ROAD:
+                board.placeRoad(player, coord)
+            elif typeB == self.SPECIALCARD:
+                board.getSpecialCard(player)
+            else:
+                print("WRONG BUY TYPE")
 
-    #def build(self, type):
+            return True
+        else:
+            return False
+
+    def enoughResources(self, player, buyCost):
