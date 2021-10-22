@@ -99,8 +99,8 @@ class guiGame():
             if tile.type != elements.Resources.DESERT:
                 self.screen.blit(tile.numsurface,(x_num,y_num))
 
-        self.screen.blit(self.house,(550,600))
-        self.screen.blit(self.castle,(700,600))
+        for item in self.items:
+            self.screen.blit(item.surface, (item.rect[0],item.rect[1]))
         pygame.display.flip()
 
     def pan(self):
@@ -151,15 +151,24 @@ class guiGame():
         self.initTiles()
         self.initNumbers()
         self.initRoads()
-        self.initBuilds()
+        self.initItems() #
 
-    def initBuilds(self):
-        self.house = pygame.image.load("./client/gui/assets/builds/house.png")
-        self.house = pygame.transform.scale(self.house, (140,100))
-        self.buildsmask = pygame.mask.from_surface(self.house)
+    def initItems(self):
+        self.items = []
 
-        self.castle = pygame.image.load("./client/gui/assets/builds/castle.png")
-        self.castle = pygame.transform.scale(self.castle, (140,100))
+        housecoords=(550,600,140,100)
+        housesurface = pygame.image.load("./client/gui/assets/builds/house.png")
+        housesurface = pygame.transform.scale(housesurface, (housecoords[2],housecoords[3]))
+        #self.itemsurface=housesurface
+        housemask = pygame.mask.from_surface(housesurface)
+        self.items.append(elements.Item(elements.Items.HOUSE, housecoords, housesurface, housemask))
+
+        castlecoords=(700,600,140,100)
+        castlesurface = pygame.image.load("./client/gui/assets/builds/castle.png")
+        castlesurface = pygame.transform.scale(castlesurface, (castlecoords[2],castlecoords[3]))
+        #self.itemsurface=housesurface
+        castlemask = pygame.mask.from_surface(castlesurface)
+        self.items.append(elements.Item(elements.Items.CASTLE, castlecoords, castlesurface, castlemask))
 
     def initTiles(self):
         self.sea = pygame.image.load("./client/gui/assets/tiles/sea.png")

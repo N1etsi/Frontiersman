@@ -27,6 +27,17 @@ class Players(Enum):
     BLACK = 10
     WHITE = 11
 
+class Items(Enum):
+    HOUSE = 0
+    CASTLE = 1
+
+class Item():
+    def __init__(self, type, rect, surface, mask):
+        self.type=type
+        self.rect=rect
+        self.surface=surface
+        self.mask=mask
+
 
 class Tile():
     def __init__(self):
