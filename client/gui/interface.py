@@ -89,6 +89,12 @@ class guiGame():
                                 print(tile.type)
                         except IndexError:
                             pass
+                    for item in self.items:
+                        try:
+                            if item.mask.get_at((event.pos[0]-item.rect[0], event.pos[1]-item.rect[1])):
+                                print(item.type)
+                        except IndexError:
+                            pass
 
     def displaygame(self):
         self.screen.fill([37,100,184])
@@ -161,14 +167,14 @@ class guiGame():
         housesurface = pygame.transform.scale(housesurface, (housecoords[2],housecoords[3]))
         #self.itemsurface=housesurface
         housemask = pygame.mask.from_surface(housesurface)
-        #self.items.append(elements.Item(elements.Items.HOUSE, housecoords, housesurface, housemask))
+        self.items.append(elements.Item(elements.Items.HOUSE, housecoords, housesurface, housemask))
 
         castlecoords=(700,600,140,100)
         castlesurface = pygame.image.load("./client/gui/assets/builds/castle.png")
         castlesurface = pygame.transform.scale(castlesurface, (castlecoords[2],castlecoords[3]))
         #self.itemsurface=housesurface
         castlemask = pygame.mask.from_surface(castlesurface)
-        #self.items.append(elements.Item(elements.Items.CASTLE, castlecoords, castlesurface, castlemask)) ## TODO:
+        self.items.append(elements.Item(elements.Items.CASTLE, castlecoords, castlesurface, castlemask)) ## TODO:
 
     def initTiles(self):
         self.sea = pygame.image.load("./client/gui/assets/tiles/sea.png")
