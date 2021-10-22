@@ -88,6 +88,9 @@ class Vertex():
     def toString(self):
         return '('+str(self.i)+','+str(self.j)+','+str(self.k)+')'
 
+class Placeable():
+    
+
 #side of the road relative to tile is expressed with the dir var (direction)
 #0, 1 and 2 are possible values, top left, top and top right
 #the bottom of ones are the top of the others, so only 3 are necessary
@@ -117,13 +120,50 @@ class Road():
 
         return str
 
+class Hand():
+    def __init__(self, player):
+        self.player = player
+        self.resources = {}
+        self.resourceCount = 0
+        self.special = {}
+        self.specialCount = 0
+
+        for rs in Resources:
+            self.resources[rs] = 0
+
+    def addCard(self, type, qnt=1):
+        self.resources[type] += qnt
+        self.resourceCount += qnt
+
+    def removeCard(self, type, qnt=1):
+        delt = self.resources[type] - qnt
+
+        if delt >= 0:
+            self.resources[type] -= qnt
+            self.resourceCount -= qnt
+
+        else:
+            return delt
+
 
 #settlement coords are the ones of the tile on their top
 #easy to calculate the other 2 this way, (add one to z and either -1 to x or y while the other is 0)
-#class Settlement():
+class Settlement():
+    def __init__(self, player, vertex):
+        self.player = player
+        self.loc = vertex
+        self.city = False
 
-#originally on the desert
-#class Robber():
+    def evolveToCity(self):
+        self.city = True
+
+
+class Robber():
+    def __init__(self, tile):
+        self.loc = tile
+
+    def move(tile):
+        self.loc = tile
 
 #how many
 #how to define the trade ratio

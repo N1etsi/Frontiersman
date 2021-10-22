@@ -52,6 +52,9 @@ class Board:
 
         return newRoad
 
+    def placeSettlement(self):
+        x = 5
+
 
     def getTile(self, coord):
         return next((tile for tile in self.tiles if tile.coord == coord), None)
@@ -65,6 +68,7 @@ class Board:
             indP = 0
 
         vert = road.vertPair[indP]
+
 
         nei = []
 
@@ -85,11 +89,7 @@ class Board:
 
         stack = []
 
-
-
         negLength, stack = self.recWorker(newR, 0, 0, stack)
-
-        print("eree")
         posLength, stack = self.recWorker(newR, 1, 0, stack)
 
         print(negLength,posLength)
@@ -121,6 +121,8 @@ class Board:
 
 
         return maxL, maxStack
+
+
 
 
 

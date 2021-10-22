@@ -1,14 +1,15 @@
 import elements
 import board
 
-#player, not user
-#keeps inventory, usage of stuff score, stats
 class Player():
-    def __init__(self, game):
-        self.board
-        self.longestPathLength = 0
-        self.longestPath = []
+    def __init__(self, user):
+        self.User = user
 
+        self.hand = elements.Hand()
 
-    def addedRoad(self):
-        x= 5
+        self.LongestRoad = 0
+        self.ArmySize = 0
+
+        self.roadsBuilt = 0
+        self.settlementsBuilt = 0
+        self.cityBuilt = 0
