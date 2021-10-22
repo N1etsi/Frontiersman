@@ -28,15 +28,19 @@ class Players(Enum):
     WHITE = 11
 
 
-
 class Tile():
-    def __init__(self, coord, type):
-        self.coord = coord
-        self.type = type
+    def __init__(self):
+        self.coord = None
+        self.type = None
         self.num = random.randint(1, 12)
         self.tilerect=None
         self.tilesurface=None
         self.numsurface=None
+
+    def __init__(self, coord, type):
+        self.coord = coord
+        self.type = type
+        self.num = random.randint(1, 12)
 
     def axis2to3(self, coord):
         z = -coord[0]-coord[1]
@@ -112,71 +116,13 @@ class Road():
 
         return str
 
-class Hand():
-    def __init__(self, player):
-        self.player = player
-        self.resources = {}
-        self.resourceCount = 0
-        self.special = {}
-        self.specialCount = 0
-
-        for rs in Resources:
-            self.resources[rs] = 0
-
-    def addCard(self, type, qnt=1):
-        self.resources[type] += qnt
-        self.resourceCount += qnt
-
-    def removeCard(self, type, qnt=1):
-        delt = self.resources[type] - qnt
-
-        if delt >= 0:
-            self.resources[type] -= qnt
-            self.resourceCount -= qnt
-            return qnt
-
-        else:
-            return 0
-
-class Cost(Hand):
-    def __init__(self, dictCost):
-        self.player = None
-        self.costDict = dictCost
-
-
 
 #settlement coords are the ones of the tile on their top
 #easy to calculate the other 2 this way, (add one to z and either -1 to x or y while the other is 0)
-class Settlement():
-    def __init__(self, player, vertex):
-        self.player = player
-        self.loc = vertex
-        self.city = False
+#class Settlement():
 
-    def evolveToCity(self):
-        self.city = True
-
-
-class Robber():
-    def __init__(self, tile):
-        self.loc = tile
-
-    def move(self, tile):
-        self.loc = tile
-
-    def rob(self, player, victim):
-        robbed = False
-        if victim.hand.resourceCount > 0:
-            while True:
-                res = getRandomResource(1)
-                if (victim.hand.removeCard(res, 1)) > 0:
-                    player.hand.addCard(res)
-                    robbed = True
-                    break
-
-        return robbed
-
-
+#originally on the desert
+#class Robber():
 
 #how many
 #how to define the trade ratio

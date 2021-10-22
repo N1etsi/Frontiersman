@@ -83,8 +83,6 @@ class guiGame():
                     self.pan()
 
                 if (event.button == 1):
-                    print(self.gameBoard.tiles[0].tilerect[0])
-                    print(event.pos[0])
                     for tile in self.gameBoard.tiles:
                         try:
                             if self.tilemask.get_at((event.pos[0]-tile.tilerect[0], event.pos[1]-tile.tilerect[1])):
