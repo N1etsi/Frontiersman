@@ -100,6 +100,9 @@ class guiGame():
             y_num = tile.tilerect[1] + tile.tilerect[3]/10
             if tile.type != elements.Resources.DESERT:
                 self.screen.blit(tile.numsurface,(x_num,y_num))
+
+        self.screen.blit(self.house,(550,600))
+        self.screen.blit(self.castle,(700,600))
         pygame.display.flip()
 
     def pan(self):
@@ -150,6 +153,15 @@ class guiGame():
         self.initTiles()
         self.initNumbers()
         self.initRoads()
+        self.initBuilds()
+
+    def initBuilds(self):
+        self.house = pygame.image.load("./client/gui/assets/builds/house.png")
+        self.house = pygame.transform.scale(self.house, (140,100))
+        self.buildsmask = pygame.mask.from_surface(self.house)
+
+        self.castle = pygame.image.load("./client/gui/assets/builds/castle.png")
+        self.castle = pygame.transform.scale(self.castle, (140,100))
 
     def initTiles(self):
         self.sea = pygame.image.load("./client/gui/assets/tiles/sea.png")
