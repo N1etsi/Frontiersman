@@ -1,4 +1,3 @@
-import gameLogic
 import board
 import actions
 import elements
@@ -23,7 +22,3 @@ for us in users:
 board = board.Board(3)
 
 turn = 0
-
-while not board.gameOver:
-    st = input(players[turn].user.nickname, "'s turn'")
-    inst = st.split(" ")

@@ -1,9 +1,25 @@
 import elements
 import board
+from enum import Enum
+
+class PlayersC(Enum):
+    NONE = 0
+    BLUE = 1
+    ORANGE = 2
+    RED = 3
+    GREEN = 4
+    PURPLE = 5
+    BROWN = 6
+    DARK_GREEN = 7
+    DARK_BLUE = 8
+    DARK_RED = 9
+    BLACK = 10
+    WHITE = 11
+    BANK = 100
 
 class Player():
     def __init__(self, user):
-        self.User = user
+        self.user = user
 
         self.hand = elements.Hand(self)
 
@@ -19,4 +35,10 @@ class Player():
 
 class Bank():
     def __init__(self):
-        self.stock = elements.Hand()
+        self.resStock = elements.Hand(PlayersC.BANK)
+
+        self.maxResources = 19
+        self.maxSpecCards = 25
+        self.maxRoads = 15
+        self.maxSettlements = 5
+        self.maxCities = 4

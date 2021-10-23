@@ -13,26 +13,12 @@ class ExtraResources(Enum):
     GOLD = 0
     ANY = 1
 
-class Players(Enum):
-    NONE = 0
-    BLUE = 1
-    ORANGE = 2
-    RED = 3
-    GREEN = 4
-    PURPLE = 5
-    BROWN = 6
-    DARK_GREEN = 7
-    DARK_BLUE = 8
-    DARK_RED = 9
-    BLACK = 10
-    WHITE = 11
-
 
 class Tile():
-    def __init__(self, coord, type):
+    def __init__(self, coord, type, diceSize):
         self.coord = coord
         self.type = type
-        self.num = random.randint(1, 12)
+        self.num = random.randint(1, diceSize)
         #self.tilerect=None
         #self.tilesurface=None
         #self.numsurface=None
@@ -141,6 +127,9 @@ class Hand():
         else:
             return 0
 
+    def cardCountType(self, type):
+        return self.resources[type]
+
 class Settlement():
     #settlement coords are the ones of the tile on their top
     #easy to calculate the other 2 this way, (add one to z and either -1 to x or y while the other is 0)
@@ -151,6 +140,11 @@ class Settlement():
 
     def evolveToCity(self):
         self.city = True
+
+class Port():
+    def __init__(self, vertices, resource):
+        self.locs = vertices
+        self.resource = resource
 
 class Robber():
     def __init__(self, tile):
