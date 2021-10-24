@@ -15,6 +15,10 @@ class Board:
         self.diceSize = 6
         self.diceNum = 2
 
+        self.specificPortRatio = 2 #:1
+        self.genericPortRatio = 3 #:1
+        self.genericRatio = 4 #:1
+
         #Game StateVars
         self.turn = 0
         self.round = 0
@@ -143,8 +147,6 @@ class Board:
 
         return surrSet
 
-
-
     def getNeiPorts(self, player):
         neiPorts = []
         for st in self.settlements:
@@ -156,6 +158,21 @@ class Board:
 
         return neiPorts
 
+    def availablePort(self, player, type):
+
+        for st in self.settlements:
+            if st.player == player:
+                for prts in self.ports:
+                    for prt in prts.locs:
+                        if st.loc == prt.locs and prt.resource==type:
+                            return True, self.specificPortRatio
+                for prts in self.ports:
+                    for prt in prts.locs:
+                        if st.loc == prt.locs and prt.resource==ExtraResources.ANY:
+                            return True, self.genericPortRatio
+
+
+        return False, 0
 
     #GAME LOGIC
     def placeRoad(self, player, vertPair):
@@ -217,7 +234,6 @@ class Board:
 
         return newSet
 
-
     def upgradeSettlement(self, player, vertex):
         st = self.getSettlement(player, vertex)
 
@@ -262,6 +278,9 @@ class Board:
 
 
         return maxL, maxStack
+
+
+        
 
     def nexRound(self):
         if self.turn >= self.nplayers:

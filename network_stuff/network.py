@@ -5,8 +5,8 @@ import pickle
 class Network:
     def __init__(self):
         self.client=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server="161.230.7.89"
-        self.port=5555
+        self.server="Frontiersman.miguelnatal19.repl.co"
+        self.port=80
         self.addr=(self.server, self.port)
         self.p=self.connect()
 
@@ -28,6 +28,3 @@ class Network:
             print(e)
         except EOFError:
             print("EOFError!")
-
-
-

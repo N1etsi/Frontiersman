@@ -23,6 +23,7 @@ class SpecialType(Enum):
     MONOPOLY = 3 #Get all the card from one resource (except from bank)
     FREECHOICE2 = 4 #Choose 2 cards of choice to receive from the bank
 
+
 buyCost = {
     BuyType.SETTLEMENT: {
         Resources.WOOL : 1,
@@ -100,40 +101,48 @@ def removeResources(board, player, buyCost):
 
     return True
 
+#OFFER EXAMPLE
+offer = {
+    Resources.WOOL : 1,
+    Resources.GRAIN : 1,
+    Resources.ORE : 1,
+}
+request = {
+    Resources.WOOL : 1,
+    Resources.GRAIN : 1,
+    Resources.ORE : 1,
+}
+
+
 #TRADE
-#ERRORS HERE
-#TODO TRADES
-class Trade():
-    def offer(self, board, player, give, want):
-        instantTrade = False
-        impossible = False
-        if  enoughResources(player, give):
-            if len(give) < 2 and len(want) < 2:
-                resPort = board.getNeiPorts()
-                for res1 in give:
-                    for res2 in want:
-                        if board.bank.resStock.resource[res2] > want[res2]:
-                            for prt in resPort:
-                                if res1 == prt.resource and give[res1] == 2 and want[res2] == 1:
-                                    instantTrade = True
-                            for prt in resPort:
-                                if prt.resource == ExtraResources.ANY and give[res1] == 3 and want[res2] == 1:
-                                    instantTrade = True
-                            if give[res1] == 4 and want[res2] == 1:
-                                instantTrade = True
-        else:
-            impossible = True
+def trade(board, player, offer, request):
+    n_offer = len(offer)
+    n_req = len(request)
 
-        if impossible:
-            return None
+    bank = False
 
-        elif instantTrade:
-            player.hand.removeCard(res1, give[res1])
-            player.hand.addCard(res2, want[res2])
+    if player.hand.hasFunds(offer):
 
-            board.bank.resStock.addCard(res1, give[res1])
-            board.bank.resStock.removeCard(res2, want[res2])
+        if n_offer == 1 and n_req == 1:
+            amountOffer = list(offer.values())[0])
+            typeOffer = list(offer.keys())[0])
+            amountReq = list(offer.values())[0])
 
-        else:
+            st, qnt = board.availablePort(player, typeOffer)
+
+            if amountOffer==qnt and amountReq==1:
+                bank = True
+                tradeCardsBank(player, offer, request)
+
+        #Not an automatic trade, propose to trade
+        if not bank:
+            ## TODO: Domestic trades (needs server working to facilitate development)
             pass
-            #TODO ask players if they want to trade
+
+
+def tradeCardsBank(player, offer, request):
+    for type in offer:
+        player.hand.removeCard(type, offer[type])
+
+    for type in request:
+        player.hand.addCard(type, request[type])

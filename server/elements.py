@@ -130,6 +130,15 @@ class Hand():
     def cardCountType(self, type):
         return self.resources[type]
 
+    def hasFunds(self, cardDict):
+        flag = True
+        for type in cardDict:
+            if cardDict[type] > cardCountType(type):
+                flag = False
+                break
+
+        return flag
+
 class Settlement():
     #settlement coords are the ones of the tile on their top
     #easy to calculate the other 2 this way, (add one to z and either -1 to x or y while the other is 0)

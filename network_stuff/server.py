@@ -5,8 +5,8 @@ from player import Player
 import pickle
 import numpy as np
 
-server="192.168.1.160"
-port=5555
+server="172.18.0.101"
+port=80
 
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -42,12 +42,12 @@ def threaded_client(conn, player):
                         reply.append(players[otherPlayerId])
                 print("Received: ", data)
                 print("Sending: ", reply)
-            
+
             conn.sendall(pickle.dumps(reply))
 
         except:
             break
-    
+
     print("Lost Connection")
     conn.close()
 
@@ -58,4 +58,3 @@ while True:
     print("Connected to:", addr)
     start_new_thread(threaded_client, (conn,currentPlayer))
     currentPlayer+=1
-    

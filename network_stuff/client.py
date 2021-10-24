@@ -15,7 +15,7 @@ def redrawWindow(win, player, others):
     for other in others:
         other.draw(win)
     pygame.display.update()
-    
+
 
 def main():
     run=True
@@ -34,7 +34,7 @@ def main():
             if event.type==pygame.QUIT:
                 run=False
                 pygame.quit()
-            
+
         p.move()
         redrawWindow(win, p, others)
 
