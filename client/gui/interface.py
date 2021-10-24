@@ -10,6 +10,12 @@ sys.path.insert(1, parent_dir)
 import board
 import elements
 
+class BuyType(Enum):
+    HOUSE = 0
+    CASTLE = 1
+    ROAD = 2
+    SPECIALCARD = 3
+
 class guiGame():
     def __init__(self):
         self.run=True
@@ -92,12 +98,6 @@ class guiGame():
                                 print(tile.type)
                         except IndexError:
                             pass
-                    for item in self.items:
-                        try:
-                            if item.mask.get_at((event.pos[0]-item.rect[0], event.pos[1]-item.rect[1])):
-                                print(item.type)
-                        except IndexError:
-                            pass
 
     def displaygame(self):
         self.screen.fill([37,100,184])
@@ -112,6 +112,16 @@ class guiGame():
             self.screen.blit(item.surface, (item.rect[0],item.rect[1]))
 
         self.displayhand()
+
+        for item in self.items:
+            try:
+                if item.mask.get_at((pygame.mouse.get_pos()[0]-item.rect[0], pygame.mouse.get_pos()[1]-item.rect[1])):
+                    self.displayprice(item)
+                    if (pygame.mouse.get_pressed == 1):
+                        print(item.type)
+            except IndexError:
+                pass
+
         pygame.display.flip()
 
 
@@ -126,6 +136,26 @@ class guiGame():
                         break
                     self.screen.blit(self.hex[res],(50+count+10*i,600))
                 count=count+i*10+50
+
+    def displayprice(self, item):
+        for buy in self.buyCost:
+            if buy == item.type:
+                #print(self.buyCost[buy])
+                count=0
+                for res in elements.Resources:
+                    if res in self.buyCost[buy]:
+                        #print(self.buyCost[buy][res])
+                        for i in range(self.buyCost[buy][res]):
+                            if i>8:
+                                break
+                            self.screen.blit(self.hex[res],(item.rect[0]+count+10*i,item.rect[1]-100))
+                        count=count+i*10+50
+        #pygame.display.flip()
+
+
+
+
+
 
 
 
@@ -147,7 +177,7 @@ class guiGame():
             self.mx=nx
             self.my=ny
 
-    def updateresources(self):
+    def updatedicts(self):
         self.resources = {
                 elements.Resources.WOOL : 20,
                 elements.Resources.GRAIN : 2,
@@ -164,12 +194,34 @@ class guiGame():
                 elements.Resources.ORE : self.ore
         }
 
+        self.buyCost = {
+            BuyType.HOUSE: {
+                elements.Resources.WOOL : 1,
+                elements.Resources.GRAIN : 1,
+                elements.Resources.LUMBER : 1,
+                elements.Resources.BRICK : 1
+            },
+            BuyType.CASTLE : {
+                elements.Resources.GRAIN : 2,
+                elements.Resources.ORE : 3
+            },
+            BuyType.ROAD : {
+                elements.Resources.LUMBER : 1,
+                elements.Resources.BRICK : 1
+            },
+            BuyType.SPECIALCARD : {
+                elements.Resources.WOOL : 1,
+                elements.Resources.GRAIN : 1,
+                elements.Resources.ORE : 1,
+            }
+        }
+
     def main(self):
 
         self.run=True
         while self.run:
             self.windowevents()
-            self.updateresources()
+            self.updatedicts()
             self.displaygame()
 
 
@@ -204,14 +256,14 @@ class guiGame():
         housesurface = pygame.transform.scale(housesurface, (housecoords[2],housecoords[3]))
         #self.itemsurface=housesurface
         housemask = pygame.mask.from_surface(housesurface)
-        self.items.append(elements.Item(elements.Items.HOUSE, housecoords, housesurface, housemask))
+        self.items.append(elements.Item(BuyType.HOUSE, housecoords, housesurface, housemask))
 
         castlecoords=(700,600,140,100)
         castlesurface = pygame.image.load("./client/gui/assets/builds/castle.png")
         castlesurface = pygame.transform.scale(castlesurface, (castlecoords[2],castlecoords[3]))
         #self.itemsurface=housesurface
         castlemask = pygame.mask.from_surface(castlesurface)
-        self.items.append(elements.Item(elements.Items.CASTLE, castlecoords, castlesurface, castlemask)) ## TODO:
+        self.items.append(elements.Item(BuyType.CASTLE, castlecoords, castlesurface, castlemask)) ## TODO:
 
     def initTiles(self):
         self.sea = pygame.image.load("./client/gui/assets/tiles/sea.png")
