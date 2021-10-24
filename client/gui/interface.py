@@ -120,6 +120,7 @@ class guiGame():
             self.screen.blit(item.surface, (item.rect[0],item.rect[1]))
 
         self.displayhand()
+        self.displayRoads()
 
         for item in self.items:
             try:
@@ -162,7 +163,22 @@ class guiGame():
 
 
 
+    def displayRoads(self):
 
+        for rd in self.gameBoard.roads:
+            #pass
+            vert0 = rd.vertPair[0]
+            vert1 = rd.vertPair[1]
+
+
+            x0 = self.centerX + (vert0.i-vert0.j + 1)*(self.wTile + self.margin)/2 - self.margin/2
+            y0 = self.centerY + (2*vert0.k -vert0.i-vert0.j)*(self.hTile + self.margin)/4 - self.margin/2
+
+            x1 = self.centerX + (vert1.i-vert1.j + 1)*(self.wTile + self.margin)/2 - self.margin/2
+            y1 = self.centerY + (2*vert1.k -vert1.i-vert1.j)*(self.hTile + self.margin)/4 - self.margin/2
+
+
+            pygame.draw.line(self.screen, (255, 127, 126), (x0, y0), (x1, y1), round(self.margin*1.30))
 
 
 
