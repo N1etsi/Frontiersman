@@ -51,8 +51,8 @@ class Vertex():
         self.k = k
 
         sum = self.i+self.j+self.k
-        if sum > 0 or sum < -1:
-            print("invalid point")
+        if sum != 0 and sum != -1:
+            print("invalid point: ", i,j,k)
             return None
 
     def __eq__(self, newV):

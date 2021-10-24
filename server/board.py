@@ -3,14 +3,17 @@ from enum import Enum
 import copy
 import elements
 import player
+from elements import Vertex
 
 
 class Board:
-    def __init__(self, size=3, nplayers=1):
+    def __init__(self, players, size=3):
         #Game Settings
         self.sideSize = size
-        self.nplayers = nplayers
-        self.diceSize = 12
+        self.nplayers = len(players)
+        print("num players ", self.nplayers)
+        self.diceSize = 6
+        self.diceNum = 2
 
         #Game StateVars
         self.turn = 0
@@ -21,7 +24,7 @@ class Board:
         self.roads = []
         self.settlements = []
         self.ports = []
-        self.players = []
+        self.players = players
         self.robber = None
 
         self.getRandomBoard(size)
@@ -42,7 +45,7 @@ class Board:
                     type = elements.Tile.getRandomResource(des)
                     if type == elements.Resources.DESERT:
                             des = 1
-                    self.tiles.append(elements.Tile(coord, type, self.diceSize))
+                    self.tiles.append(elements.Tile(coord, type, self.diceSize*self.diceNum))
 
         if des == 0:
             while True:
@@ -111,6 +114,36 @@ class Board:
                 return st
 
         return None
+
+    def distributeResources(self, tile):
+        mult = 1
+        surrSet = self.getSurroundingSettlements(tile)
+
+        for set in surrSet:
+            if set.city:
+                mult = 2
+            set.player.hand.addCard(tile.type, 1*mult)
+
+    def getSurroundingSettlements(self, tile):
+        surrSet = []
+        c = tile.coord
+        possVert = []
+        z = -c[0]-c[1]
+        possVert.append(Vertex(   c[0],    c[1],   z))
+        possVert.append(Vertex(-1+c[0],    c[1],   z))
+        possVert.append(Vertex(   c[0], -1+c[1],   z))
+        possVert.append(Vertex(-1+c[0],    c[1], 1+z))
+        possVert.append(Vertex(   c[0], -1+c[1], 1+z))
+        possVert.append(Vertex(-1+c[0], -1+c[1], 1+z))
+
+        for st in self.settlements:
+            for vert in possVert:
+                if st.loc == vert:
+                    surrSet.append(st)
+
+        return surrSet
+
+
 
     def getNeiPorts(self, player):
         neiPorts = []
@@ -231,9 +264,15 @@ class Board:
         return maxL, maxStack
 
     def nexRound(self):
+        if self.turn >= self.nplayers:
+            self.turn = 0
+            self.round +=1
+
+
+        ind = self.turn
+
+        if self.round == 1:
+            ind = self.nplayers - self.turn - 1
+
         self.turn += 1
-
-        if self.turn > self.nplayers:
-            self.turn = 1
-
-        return self.players[self.turn]
+        return self.players[ind]
