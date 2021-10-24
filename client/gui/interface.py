@@ -23,7 +23,7 @@ class guiGame():
         self.H = 720
 
         self.wTile = 80
-        self.hTile = 80*1.16 #1.16 * self.wTile
+        self.hTile = 80*1.155 #1.16 * self.wTile
 
         self.centerX = 3*self.W/8 - self.wTile/2
         self.centerY = 3*self.H/8 - self.hTile/3
@@ -45,6 +45,14 @@ class guiGame():
         self.initAssets()
 
         self.gameBoard = board.Board(3)
+
+        plr = elements.Players.GREEN
+        road1=self.gameBoard.placeRoad(plr, [elements.Vertex(0,0,0), elements.Vertex(0,0,-1)])
+        road2=self.gameBoard.placeRoad(plr, [elements.Vertex(0,0,-1), elements.Vertex(1,0,-1)])
+        road3=self.gameBoard.placeRoad(plr, [elements.Vertex(1,0,-2), elements.Vertex(1,0,-1)])
+        road4=self.gameBoard.placeRoad(plr, [elements.Vertex(1,0,-2), elements.Vertex(1,1,-2)])
+        road5=self.gameBoard.placeRoad(plr, [elements.Vertex(0,1,-2), elements.Vertex(1,1,-2)])
+        road6=self.gameBoard.placeRoad(plr, [elements.Vertex(0,1,-2), elements.Vertex(0,1,-1)])
 
         self.initWindow()
 
@@ -223,6 +231,8 @@ class guiGame():
             self.windowevents()
             self.updatedicts()
             self.displaygame()
+
+
 
 
 

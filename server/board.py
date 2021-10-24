@@ -1,21 +1,35 @@
 import random
 from enum import Enum
+import copy
 import elements
-import Player
+import player
+from elements import Vertex
+
 
 class Board:
-    def __init__(self, size=3, nplayers=1):
+    def __init__(self, players, size=3):
+        #Game Settings
         self.sideSize = size
-        self.nplayers = nplayers
+        self.nplayers = len(players)
+        print("num players ", self.nplayers)
+        self.diceSize = 6
+        self.diceNum = 2
+
+        #Game StateVars
+        self.turn = 0
+        self.round = 0
+        self.gameOver = False
+
         self.tiles = []
         self.roads = []
         self.settlements = []
-        self.players = []
+        self.ports = []
+        self.players = players
+        self.robber = None
+
         self.getRandomBoard(size)
 
-        self.bank = user.Player()
-
-        self.gameOver = False
+        self.bank = player.Bank()
 
 
 
@@ -31,7 +45,7 @@ class Board:
                     type = elements.Tile.getRandomResource(des)
                     if type == elements.Resources.DESERT:
                             des = 1
-                    self.tiles.append(elements.Tile(coord, type))
+                    self.tiles.append(elements.Tile(coord, type, self.diceSize*self.diceNum))
 
         if des == 0:
             while True:
@@ -44,6 +58,7 @@ class Board:
 
             desertTile = self.getTile([x,y])
             desertTile.type = elements.Resources.DESERT
+            self.robber = Robber(desertTile)
 
         return self.tiles
 
@@ -69,19 +84,145 @@ class Board:
 
         return nei
 
+    def getNeiVertices(self, v):
+        pol = -1
+        if v.polarity():
+            pol = 1
+
+        iNei = elements.Vertex(v.i+pol, v.j, v.k)
+        jNei = elements.Vertex(v.i, v.j+pol, v.k)
+        kNei = elements.Vertex(v.i, v.j, v.k+pol)
+
+        neis = []
+
+        if iNei is not None:
+            neis.append(iNei)
+        if jNej is not None:
+            neis.append(jNej)
+        if kNek is not None:
+            neis.append(kNek)
+
+        return neis
+
+    def getSettlement(self, player, vert):
+        ind = 0
+        if vert.polarity():
+            ind = 1
+
+        for st in self.settlements:
+            if st.player == player and st.vertPair[ind]==vert:
+                return st
+
+        return None
+
+    def distributeResources(self, tile):
+        mult = 1
+        surrSet = self.getSurroundingSettlements(tile)
+
+        for set in surrSet:
+            if set.city:
+                mult = 2
+            set.player.hand.addCard(tile.type, 1*mult)
+
+    def getSurroundingSettlements(self, tile):
+        surrSet = []
+        c = tile.coord
+        possVert = []
+        z = -c[0]-c[1]
+        possVert.append(Vertex(   c[0],    c[1],   z))
+        possVert.append(Vertex(-1+c[0],    c[1],   z))
+        possVert.append(Vertex(   c[0], -1+c[1],   z))
+        possVert.append(Vertex(-1+c[0],    c[1], 1+z))
+        possVert.append(Vertex(   c[0], -1+c[1], 1+z))
+        possVert.append(Vertex(-1+c[0], -1+c[1], 1+z))
+
+        for st in self.settlements:
+            for vert in possVert:
+                if st.loc == vert:
+                    surrSet.append(st)
+
+        return surrSet
+
+
+
+    def getNeiPorts(self, player):
+        neiPorts = []
+        for st in self.settlements:
+            if st.player == player:
+                for prts in self.ports:
+                    for prt in prts.locs:
+                        if st.loc == prt.locs:
+                            neiPorts.append(prts)
+
+        return neiPorts
+
+
     #GAME LOGIC
     def placeRoad(self, player, vertPair):
+        reach = False
+        ind = 0
+        if vertPair[0].polarity():
+            ind = 1
         newRoad = elements.Road(player, vertPair)
+
+        for rd in self.roads:
+            if rd == newRoad:
+                del newRoad
+                reach = False
+                break
+            if rd.player == player:
+                if rd.vertPair[0] == vertPair[ind] or rd.vertPair[1] == vertPair[1-ind]:
+                    reach = True
+
+
+        if reach == False:
+            return None
+
         board.roads.append(newRoad)
-        #player.addedRoad(newRoad)
+        player.roadsBuilt += 1
+
+        newSize = getLongestRoad(player, newRoad)
+
+        if player.LongestRoad < newSize:
+            player.LongestRoad = newSize
 
         return newRoad
 
-    def placeSettlement(self, player, vertex):
-        x = 5
+    def placeSettlement(self, player, vert):
+        reach = False
+        occupied = False
+
+        #Calc ocupation
+        all = getNeiVertices(vert)
+        all.append(vert)
+        for set in self.settlements:
+            for ver in all:
+                if set.loc == ver:
+                    occupied = True
+                    return not occupied
+        #Calc reach of road
+        ind = 0
+        if vert.polarity():
+            ind = 1
+
+        for rd in self.roads:
+            if rd.player == player and rd.vertPair[ind] == vert:
+                reach = True
+        if reach == False:
+            return reach
+
+        newSet = elements.Settlement(player, vert)
+        board.settlements.append(newSet)
+        player.settlementsBuilt += 1
+
+        return newSet
+
 
     def upgradeSettlement(self, player, vertex):
-        x = 5
+        st = self.getSettlement(player, vertex)
+
+        st.evolveToCity()
+
 
     #STILL NEEDS TO KEEP VISITED STACK TO AVOID LOOPS
     #NEEDS TO CHECK IF SETTLEMENTS ARE BUILT ON THAT VERTEX (only from other players)
@@ -121,3 +262,17 @@ class Board:
 
 
         return maxL, maxStack
+
+    def nexRound(self):
+        if self.turn >= self.nplayers:
+            self.turn = 0
+            self.round +=1
+
+
+        ind = self.turn
+
+        if self.round == 1:
+            ind = self.nplayers - self.turn - 1
+
+        self.turn += 1
+        return self.players[ind]
