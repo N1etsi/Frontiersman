@@ -34,7 +34,7 @@ class guiGame():
 
         self.board_size=(self.W, self.H)
         self.zoomlimit=self.wTile
-        self.screen= pygame.display.set_mode(self.board_size, pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE)
+        self.screen= pygame.display.set_mode(self.board_size, pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE | pygame.NOFRAME)
         pygame.display.set_caption('Frontiersman')
         self.screen.fill([37,100,184])
         self.tile_size=(self.wTile,self.hTile)
@@ -178,7 +178,7 @@ class guiGame():
             y1 = self.centerY + (2*vert1.k -vert1.i-vert1.j)*(self.hTile + self.margin)/4 - self.margin/2
 
 
-            pygame.draw.line(self.screen, (255, 127, 126), (x0, y0), (x1, y1), round(self.margin*1.30))
+            pygame.draw.line(self.screen, (20, 200, 140), (x0, y0), (x1, y1), round(self.margin*1.30))
 
 
 
