@@ -46,9 +46,9 @@ class Tile():
         self.coord = coord
         self.type = type
         self.num = random.randint(1, 12)
-        self.tilerect=None
-        self.tilesurface=None
-        self.numsurface=None
+        self.tilerect=None #DELETE
+        self.tilesurface=None #DELETE
+        self.numsurface=None #DELETE
 
 
     def axis2to3(self, coord):
