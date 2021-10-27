@@ -9,6 +9,12 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.insert(1, parent_dir)
 import board
 import elements
+import random
+
+class CoordXY():
+    def __init__(self):
+        self.X = None
+        self.Y = None
 
 class BuyType(Enum):
     HOUSE = 0
@@ -40,6 +46,9 @@ class guiGame():
         self.tile_size=(self.wTile,self.hTile)
         self.number_size=(self.wTile/3,self.hTile/3)
         self.road_size=(self.margin,self.wTile/2)
+        self.dice_size=(50,50)
+        self.d1=1
+        self.d2=1
 
 
         self.initAssets()
@@ -107,7 +116,39 @@ class guiGame():
                         except IndexError:
                             pass
 
+                    for item in self.items:
+                        try:
+                            if item.mask.get_at((event.pos[0]-item.rect[0], event.pos[1]-item.rect[1])):
+                                print(item.type)
+                        except IndexError:
+                            pass
+                    for i in range(2):
+                        try:
+                            if self.dicemask.get_at((event.pos[0]-900+60*i, event.pos[1]-600)):
+                                self.d1=random.randint(1,6)
+                                self.d2=random.randint(1,6)
+                        except IndexError:
+                            pass
+
     def displaygame(self):
+
+        self.displayboard()
+        self.displayhand()
+        self.displayRoads()
+        self.displayprice()
+        self.displaydices()
+
+        pygame.display.flip()
+
+
+    def displaydices(self):
+        # d1=random.randint(1, 6)
+        # print(d1)
+        self.screen.blit(self.dice_list[self.d1], (900,600))
+        self.screen.blit(self.dice_list[self.d2], (960,600))
+
+
+    def displayboard(self):
         self.screen.fill([37,100,184])
         for tile in self.gameBoard.tiles:
             self.screen.blit(tile.tilesurface, (tile.tilerect[0],tile.tilerect[1]))
@@ -118,22 +159,6 @@ class guiGame():
 
         for item in self.items:
             self.screen.blit(item.surface, (item.rect[0],item.rect[1]))
-
-        self.displayhand()
-        self.displayRoads()
-
-        for item in self.items:
-            try:
-                if item.mask.get_at((pygame.mouse.get_pos()[0]-item.rect[0], pygame.mouse.get_pos()[1]-item.rect[1])):
-                    self.displayprice(item)
-                    if (pygame.mouse.get_pressed == 1):
-                        print(item.type)
-            except IndexError:
-                pass
-
-        pygame.display.flip()
-
-
 
     def displayhand(self):
         count=0
@@ -146,21 +171,25 @@ class guiGame():
                     self.screen.blit(self.hex[res],(50+count+10*i,600))
                 count=count+i*10+50
 
-    def displayprice(self, item):
-        for buy in self.buyCost:
-            if buy == item.type:
-                #print(self.buyCost[buy])
-                count=0
-                for res in elements.Resources:
-                    if res in self.buyCost[buy]:
-                        #print(self.buyCost[buy][res])
-                        for i in range(self.buyCost[buy][res]):
-                            if i>8:
-                                break
-                            self.screen.blit(self.hex[res],(item.rect[0]+count+10*i,item.rect[1]-100))
-                        count=count+i*10+50
-        #pygame.display.flip()
+    def displayprice(self):
 
+        for item in self.items:
+            try:
+                if item.mask.get_at((pygame.mouse.get_pos()[0]-item.rect[0], pygame.mouse.get_pos()[1]-item.rect[1])):
+                    for buy in self.buyCost:
+                        if buy == item.type:
+                            #print(self.buyCost[buy])
+                            count=0
+                            for res in elements.Resources:
+                                if res in self.buyCost[buy]:
+                                    #print(self.buyCost[buy][res])
+                                    for i in range(self.buyCost[buy][res]):
+                                        if i>8:
+                                            break
+                                        self.screen.blit(self.hex[res],(item.rect[0]+count+10*i,item.rect[1]-100))
+                                    count=count+i*10+50
+            except IndexError:
+                pass
 
 
     def displayRoads(self):
@@ -240,6 +269,7 @@ class guiGame():
             }
         }
 
+
     def main(self):
 
         self.run=True
@@ -273,6 +303,7 @@ class guiGame():
         self.initNumbers()
         self.initRoads()
         self.initItems() #
+        self.initDices()
 
     def initItems(self):
         self.items = []
@@ -361,6 +392,30 @@ class guiGame():
         self.twelve = pygame.transform.scale(self.twelve, self.number_size)
 
         self.num_list=[None,self.one,self.two,self.three,self.four,self.five,self.six,self.seven,self.eigth,self.nine,self.ten,self.eleven,self.twelve]
+
+
+    def initDices(self):
+        self.done = pygame.image.load("./client/gui/assets/dices/one.png")
+        self.done = pygame.transform.scale(self.done, self.dice_size)
+
+        self.dtwo = pygame.image.load("./client/gui/assets/dices/two.png")
+        self.dtwo = pygame.transform.scale(self.dtwo, self.dice_size)
+
+        self.dthree = pygame.image.load("./client/gui/assets/dices/three.png")
+        self.dthree = pygame.transform.scale(self.dthree, self.dice_size)
+
+        self.dfour = pygame.image.load("./client/gui/assets/dices/four.png")
+        self.dfour = pygame.transform.scale(self.dfour, self.dice_size)
+
+        self.dfive = pygame.image.load("./client/gui/assets/dices/five.png")
+        self.dfive = pygame.transform.scale(self.dfive, self.dice_size)
+
+        self.dsix = pygame.image.load("./client/gui/assets/dices/six.png")
+        self.dsix = pygame.transform.scale(self.dsix, self.dice_size)
+
+        self.dice_list=[None,self.done,self.dtwo,self.dthree,self.dfour,self.dfive,self.dsix]
+
+        self.dicemask = pygame.mask.from_surface(self.done)
 
     def initRoads(self):
         self.black = pygame.image.load("./client/gui/assets/roads/black.png")
