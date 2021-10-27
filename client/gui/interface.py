@@ -11,11 +11,6 @@ import board
 import elements
 import random
 
-class CoordXY():
-    def __init__(self):
-        self.X = None
-        self.Y = None
-
 class BuyType(Enum):
     HOUSE = 0
     CASTLE = 1
@@ -66,8 +61,6 @@ class guiGame():
         self.initWindow()
 
         self.main()
-
-
 
     def initWindow(self):
         for tile in self.gameBoard.tiles:
@@ -140,13 +133,11 @@ class guiGame():
 
         pygame.display.flip()
 
-
     def displaydices(self):
         # d1=random.randint(1, 6)
         # print(d1)
         self.screen.blit(self.dice_list[self.d1], (900,600))
         self.screen.blit(self.dice_list[self.d2], (960,600))
-
 
     def displayboard(self):
         self.screen.fill([37,100,184])
@@ -168,7 +159,7 @@ class guiGame():
                 for i in range(self.resources[res]):
                     if i>8:
                         break
-                    self.screen.blit(self.hex[res],(50+count+10*i,600))
+                    self.screen.blit(self.typedict[res],(50+count+10*i,600))
                 count=count+i*10+50
 
     def displayprice(self):
@@ -186,11 +177,10 @@ class guiGame():
                                     for i in range(self.buyCost[buy][res]):
                                         if i>8:
                                             break
-                                        self.screen.blit(self.hex[res],(item.rect[0]+count+10*i,item.rect[1]-100))
+                                        self.screen.blit(self.typedict[res],(item.rect[0]+count+10*i,item.rect[1]-100))
                                     count=count+i*10+50
             except IndexError:
                 pass
-
 
     def displayRoads(self):
 
@@ -208,9 +198,6 @@ class guiGame():
 
 
             pygame.draw.line(self.screen, (20, 200, 140), (x0, y0), (x1, y1), round(self.margin*1.30))
-
-
-
 
     def pan(self):
         while True:
@@ -239,14 +226,6 @@ class guiGame():
                 elements.Resources.ORE : 5
         }
 
-        self.hex = {
-                elements.Resources.WOOL : self.wool,
-                elements.Resources.GRAIN : self.grain,
-                elements.Resources.BRICK : self.brick,
-                elements.Resources.LUMBER : self.lumber,
-                elements.Resources.ORE : self.ore
-        }
-
         self.buyCost = {
             BuyType.HOUSE: {
                 elements.Resources.WOOL : 1,
@@ -268,7 +247,6 @@ class guiGame():
                 elements.Resources.ORE : 1,
             }
         }
-
 
     def main(self):
 
@@ -392,7 +370,6 @@ class guiGame():
         self.twelve = pygame.transform.scale(self.twelve, self.number_size)
 
         self.num_list=[None,self.one,self.two,self.three,self.four,self.five,self.six,self.seven,self.eigth,self.nine,self.ten,self.eleven,self.twelve]
-
 
     def initDices(self):
         self.done = pygame.image.load("./client/gui/assets/dices/one.png")

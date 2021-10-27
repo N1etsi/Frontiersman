@@ -5,6 +5,7 @@ import mainpage
 import boardpage
 import globpage
 from pages import *
+import client
 
 import os,sys,inspect
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -20,7 +21,7 @@ H = 720
 bW = 200
 bH= 50
 
-
+board = client.getBoard()
 
 currPage = Pages.MAIN
 
@@ -28,13 +29,13 @@ currPage = Pages.MAIN
 pygame.init()
 pygame.display.set_caption('Frontiersman')
 window_surface = pygame.display.set_mode((W, H),  pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE | pygame.NOFRAME)
-manager = pygame_gui.UIManager((W, H), "./base_gui/assets/themes/button_theme.json")
+manager = pygame_gui.UIManager((W, H), "./client/base_gui/assets/themes/button_theme.json")
 background = pygame.Surface((W, H))
 background.fill(pygame.Color([37,100,184])) #2564b8
 
 globP = globpage.globpage(manager, H,W,25,25)
-mainP = mainpage.mainpage(manager, H,W,bH,bW)
-boardP = boardpage.boardpage(manager, H,W)
+mainP = mainpage.mainpage(manager, H,W,bH,bW, window_surface, background)
+boardP = boardpage.boardpage(manager, H,W, board, window_surface)
 
 globP.setupGlob()
 mainP.setupMain()
@@ -51,8 +52,9 @@ while is_running:
     if reloadPage:
         if currPage == Pages.MAIN:
             mainP.enable()
-        elif currPage == Pages.BOARD:
-            boardP.enable()
+
+    if currPage == Pages.BOARD:
+        boardP.draw()
 
 
     for event in pygame.event.get():
@@ -71,7 +73,8 @@ while is_running:
         manager.process_events(event)
 
     manager.update(time_delta)
-    window_surface.blit(background, (0, 0))
+    if currPage != Pages.BOARD:
+        window_surface.blit(background, (0, 0))
     manager.draw_ui(window_surface)
 
     pygame.display.update()

@@ -4,7 +4,7 @@ import sys
 from pages import *
 
 class mainpage():
-    def __init__(self,manager, mainH, mainW, bH, bW):
+    def __init__(self,manager, mainH, mainW, bH, bW, screen, bg):
         self.manager = manager
         self.mainH = mainH
         self.mainW = mainW
@@ -12,6 +12,8 @@ class mainpage():
         self.bH = bH
         self.bW = bW
 
+        self.screen = screen
+        self.bg = bg
 
         self.loggedIn = False
 
@@ -35,7 +37,7 @@ class mainpage():
         self.elements.append(self.create_button)
 
     def logo(self):
-        loadedLogo = pygame.image.load('./base_gui/assets/general/logo.png')
+        loadedLogo = pygame.image.load('./client/base_gui/assets/general/logo.png')
         imgLogo = pygame_gui.elements.UIImage(pygame.Rect(((self.mainW/2-1.5*self.bW),(self.mainH/4-3*self.bH)), (3*self.bW, 2*self.bW) ),
                                     loadedLogo, self.manager)
 
@@ -71,6 +73,8 @@ class mainpage():
     def hideMain(self):
         for el in self.elements:
             el.hide()
+
+        self.screen.blit(self.bg, (0, 0))
 
     def enable(self):
         for el in self.elements:
