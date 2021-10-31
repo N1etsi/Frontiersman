@@ -26,6 +26,7 @@ board = client.getBoard()
 currPage = Pages.MAIN
 
 
+pygame.display.init()
 pygame.init()
 pygame.display.set_caption('Frontiersman')
 window_surface = pygame.display.set_mode((W, H),  pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.RESIZABLE | pygame.NOFRAME)
@@ -35,7 +36,7 @@ background.fill(pygame.Color([37,100,184])) #2564b8
 
 globP = globpage.globpage(manager, H,W,25,25)
 mainP = mainpage.mainpage(manager, H,W,bH,bW, window_surface, background)
-boardP = boardpage.boardpage(manager, H,W, board, window_surface)
+boardP = boardpage.boardpage(manager, H,W, board, window_surface, background)
 
 globP.setupGlob()
 mainP.setupMain()
@@ -52,9 +53,9 @@ while is_running:
     if reloadPage:
         if currPage == Pages.MAIN:
             mainP.enable()
+        elif currPage == Pages.BOARD:
+            boardP.enable()
 
-    if currPage == Pages.BOARD:
-        boardP.draw()
 
 
     for event in pygame.event.get():
@@ -73,8 +74,10 @@ while is_running:
         manager.process_events(event)
 
     manager.update(time_delta)
-    if currPage != Pages.BOARD:
-        window_surface.blit(background, (0, 0))
+
+    window_surface.blit(background, (0, 0))
+    if currPage == Pages.BOARD:
+        boardP.draw()
     manager.draw_ui(window_surface)
 
     pygame.display.update()

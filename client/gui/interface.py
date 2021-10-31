@@ -30,7 +30,7 @@ class guiGame():
         self.centerY = 3*self.H/8 - self.hTile/3
 
         self.margin = 6
-        self.yOff = 3*(self.hTile+self.margin)/4
+        self.yOff = 3*self.hTile/4+3*self.margin
         self.xOff = (self.wTile+self.margin)/2
 
         self.board_size=(self.W, self.H)
@@ -288,40 +288,40 @@ class guiGame():
 
         housecoords=(550,600,140,100)
         housesurface = pygame.image.load("./client/gui/assets/builds/house.png")
-        housesurface = pygame.transform.scale(housesurface, (housecoords[2],housecoords[3]))
+        housesurface = pygame.transform.smoothscale(housesurface, (housecoords[2],housecoords[3]))
         #self.itemsurface=housesurface
         housemask = pygame.mask.from_surface(housesurface)
         self.items.append(elements.Item(BuyType.HOUSE, housecoords, housesurface, housemask))
 
         castlecoords=(700,600,140,100)
         castlesurface = pygame.image.load("./client/gui/assets/builds/castle.png")
-        castlesurface = pygame.transform.scale(castlesurface, (castlecoords[2],castlecoords[3]))
+        castlesurface = pygame.transform.smoothscale(castlesurface, (castlecoords[2],castlecoords[3]))
         #self.itemsurface=housesurface
         castlemask = pygame.mask.from_surface(castlesurface)
         self.items.append(elements.Item(BuyType.CASTLE, castlecoords, castlesurface, castlemask)) ## TODO:
 
     def initTiles(self):
         self.sea = pygame.image.load("./client/gui/assets/tiles/sea.png")
-        self.sea = pygame.transform.scale(self.sea, self.tile_size)
+        self.sea = pygame.transform.smoothscale(self.sea, self.tile_size)
         self.tilemask = pygame.mask.from_surface(self.sea)
 
         self.desert = pygame.image.load("./client/gui/assets/tiles/desert.png")
-        self.desert = pygame.transform.scale(self.desert, self.tile_size)
+        self.desert = pygame.transform.smoothscale(self.desert, self.tile_size)
 
         self.brick = pygame.image.load("./client/gui/assets/tiles/brick.png")
-        self.brick = pygame.transform.scale(self.brick, self.tile_size)
+        self.brick = pygame.transform.smoothscale(self.brick, self.tile_size)
 
         self.grain = pygame.image.load("./client/gui/assets/tiles/grain.png")
-        self.grain = pygame.transform.scale(self.grain, self.tile_size)
+        self.grain = pygame.transform.smoothscale(self.grain, self.tile_size)
 
         self.lumber = pygame.image.load("./client/gui/assets/tiles/lumber.png")
-        self.lumber = pygame.transform.scale(self.lumber, self.tile_size)
+        self.lumber = pygame.transform.smoothscale(self.lumber, self.tile_size)
 
         self.ore = pygame.image.load("./client/gui/assets/tiles/ore.png")
-        self.ore = pygame.transform.scale(self.ore, self.tile_size)
+        self.ore = pygame.transform.smoothscale(self.ore, self.tile_size)
 
         self.wool = pygame.image.load("./client/gui/assets/tiles/wool.png")
-        self.wool = pygame.transform.scale(self.wool, self.tile_size)
+        self.wool = pygame.transform.smoothscale(self.wool, self.tile_size)
 
         self.typedict = {
               elements.Resources.DESERT: self.desert,
@@ -334,61 +334,61 @@ class guiGame():
 
     def initNumbers(self):
         self.one = pygame.image.load("./client/gui/assets/numbers/one.png")
-        self.one = pygame.transform.scale(self.one, self.number_size)
+        self.one = pygame.transform.smoothscale(self.one, self.number_size)
 
         self.two = pygame.image.load("./client/gui/assets/numbers/two.png")
-        self.two = pygame.transform.scale(self.two, self.number_size)
+        self.two = pygame.transform.smoothscale(self.two, self.number_size)
 
         self.three = pygame.image.load("./client/gui/assets/numbers/three.png")
-        self.three = pygame.transform.scale(self.three, self.number_size)
+        self.three = pygame.transform.smoothscale(self.three, self.number_size)
 
         self.four = pygame.image.load("./client/gui/assets/numbers/four.png")
-        self.four = pygame.transform.scale(self.four, self.number_size)
+        self.four = pygame.transform.smoothscale(self.four, self.number_size)
 
         self.five = pygame.image.load("./client/gui/assets/numbers/five.png")
-        self.five = pygame.transform.scale(self.five, self.number_size)
+        self.five = pygame.transform.smoothscale(self.five, self.number_size)
 
         self.six = pygame.image.load("./client/gui/assets/numbers/six.png")
-        self.six = pygame.transform.scale(self.six, self.number_size)
+        self.six = pygame.transform.smoothscale(self.six, self.number_size)
 
         self.seven = pygame.image.load("./client/gui/assets/numbers/seven.png")
-        self.seven = pygame.transform.scale(self.seven, self.number_size)
+        self.seven = pygame.transform.smoothscale(self.seven, self.number_size)
 
         self.eigth = pygame.image.load("./client/gui/assets/numbers/eigth.png")
-        self.eigth = pygame.transform.scale(self.eigth, self.number_size)
+        self.eigth = pygame.transform.smoothscale(self.eigth, self.number_size)
 
         self.nine = pygame.image.load("./client/gui/assets/numbers/nine.png")
-        self.nine = pygame.transform.scale(self.nine, self.number_size)
+        self.nine = pygame.transform.smoothscale(self.nine, self.number_size)
 
         self.ten = pygame.image.load("./client/gui/assets/numbers/ten.png")
-        self.ten = pygame.transform.scale(self.ten, self.number_size)
+        self.ten = pygame.transform.smoothscale(self.ten, self.number_size)
 
         self.eleven = pygame.image.load("./client/gui/assets/numbers/eleven.png")
-        self.eleven = pygame.transform.scale(self.eleven, self.number_size)
+        self.eleven = pygame.transform.smoothscale(self.eleven, self.number_size)
 
         self.twelve = pygame.image.load("./client/gui/assets/numbers/twelve.png")
-        self.twelve = pygame.transform.scale(self.twelve, self.number_size)
+        self.twelve = pygame.transform.smoothscale(self.twelve, self.number_size)
 
         self.num_list=[None,self.one,self.two,self.three,self.four,self.five,self.six,self.seven,self.eigth,self.nine,self.ten,self.eleven,self.twelve]
 
     def initDices(self):
         self.done = pygame.image.load("./client/gui/assets/dices/one.png")
-        self.done = pygame.transform.scale(self.done, self.dice_size)
+        self.done = pygame.transform.smoothscale(self.done, self.dice_size)
 
         self.dtwo = pygame.image.load("./client/gui/assets/dices/two.png")
-        self.dtwo = pygame.transform.scale(self.dtwo, self.dice_size)
+        self.dtwo = pygame.transform.smoothscale(self.dtwo, self.dice_size)
 
         self.dthree = pygame.image.load("./client/gui/assets/dices/three.png")
-        self.dthree = pygame.transform.scale(self.dthree, self.dice_size)
+        self.dthree = pygame.transform.smoothscale(self.dthree, self.dice_size)
 
         self.dfour = pygame.image.load("./client/gui/assets/dices/four.png")
-        self.dfour = pygame.transform.scale(self.dfour, self.dice_size)
+        self.dfour = pygame.transform.smoothscale(self.dfour, self.dice_size)
 
         self.dfive = pygame.image.load("./client/gui/assets/dices/five.png")
-        self.dfive = pygame.transform.scale(self.dfive, self.dice_size)
+        self.dfive = pygame.transform.smoothscale(self.dfive, self.dice_size)
 
         self.dsix = pygame.image.load("./client/gui/assets/dices/six.png")
-        self.dsix = pygame.transform.scale(self.dsix, self.dice_size)
+        self.dsix = pygame.transform.smoothscale(self.dsix, self.dice_size)
 
         self.dice_list=[None,self.done,self.dtwo,self.dthree,self.dfour,self.dfive,self.dsix]
 

@@ -11,8 +11,8 @@
             "hovered_text": "#e8e8e8",
             "selected_text": "#e8e8e8",
             "disabled_text": "#4a4a4a",
-            "normal_border": "#ffB2A5",
-            "hovered_border": "#ffC2B5",
+            "normal_border": "#ffffff",
+            "hovered_border": "#000000",
             "link_text": "#0000EE",
             "link_hover": "#2020FF",
             "link_selected": "#551A8B",
@@ -26,7 +26,18 @@
     "misc" :
     {
       "shape": "rounded_rectangle",
-      "shape_corner_radius" : "15"
+      "shape_corner_radius" : "15",
+      "shadow_width" : "1",
+      "border_width" : "1"
+    }
+  },
+
+  "panel":
+  {
+    "misc" :
+    {
+      "shape": "rounded_rectangle",
+      "shape_corner_radius" : "20"
     }
   },
 
@@ -35,7 +46,109 @@
     "misc" :
     {
       "shape": "rounded_rectangle",
-      "shape_corner_radius" : "4"
+      "shape_corner_radius" : "4",
+      "shadow_width" : "1",
+      "border_width" : "1"
+    }
+  },
+  "#settlement":
+  {
+    "images":
+      {
+      "normal_image":
+        {
+          "path" : "./client/base_gui/assets/general/settlement.png",
+          "sub_surface_rect" : "0,0,60,120"
+        }
+    },
+
+    "misc" :
+    {
+      "shape": "rounded_rectangle",
+      "shape_corner_radius" : "20"
+    }
+  },
+  "#city":
+  {
+    "images":
+      {
+      "normal_image":
+        {
+          "path" : "./client/base_gui/assets/general/city.png",
+          "sub_surface_rect" : "0,0,60,120"
+        }
+    },
+
+    "misc" :
+    {
+      "shape": "rounded_rectangle",
+      "shape_corner_radius" : "20"
+    }
+  },
+  "#road":
+  {
+    "images":
+      {
+      "normal_image":
+        {
+          "path" : "./client/base_gui/assets/general/road.png",
+          "sub_surface_rect" : "0,0,60,120"
+        }
+    },
+
+    "misc" :
+    {
+      "shape": "rounded_rectangle",
+      "shape_corner_radius" : "20"
+    }
+  },
+  "#spec":
+  {
+    "images":
+      {
+      "normal_image":
+        {
+          "path" : "./client/base_gui/assets/general/spec.png",
+          "sub_surface_rect" : "0,0,60,120"
+        }
+    },
+
+    "misc" :
+    {
+      "shape": "rounded_rectangle",
+      "shape_corner_radius" : "20"
+    }
+  },
+  "#skip":
+  {
+    "images":
+      {
+      "normal_image":
+        {
+          "path" : "./client/base_gui/assets/general/skip.png",
+          "sub_surface_rect" : "0,0,45,120"
+        }
+    },
+
+    "misc" :
+    {
+      "shape": "rounded_rectangle",
+      "shape_corner_radius" : "20"
+    }
+  },
+  "#bankIco":
+  {
+    "background_image":
+    {
+        "path" : "./client/base_gui/assets/general/road.png",
+        "sub_surface_rect" : "0,0,60,120"
+    },
+
+    "misc" :
+    {
+      "shape": "rounded_rectangle",
+      "shape_corner_radius" : "20",
+      "border_width": "0"
     }
   }
 

@@ -13,8 +13,6 @@ from elements import *
 
 
 class boardpage():
-    wTile = 80
-    hTile = 80*1.155
 
     gTiles = []
     gRoads = []
@@ -23,30 +21,43 @@ class boardpage():
 
 
 
-    def __init__(self,manager, mainH, mainW, board, screen):
+    def __init__(self,manager, mainH, mainW, board, screen, bg):
         self.manager = manager
         self.H = mainH
         self.W = mainW
         self.gameBoard = board
         self.screen = screen
+        self.bg = bg
 
-        self.centerX = 3*self.W/8 - self.wTile/2
-        self.centerY = 3*self.H/8 - self.hTile/3
+        self.wTile = self.W/10
+        self.hTile = self.wTile*1.155
 
-        self.margin = 6
+        self.centerX = 3*self.W/8 - 3*self.wTile/4
+        self.centerY = 3*self.H/8 - 1*self.hTile/4
+
+        self.margin = self.hTile/25
         #Tile unitary offset of tile coordinate system
-        self.yOff = 3*(self.hTile+self.margin)/4
+        self.yOff = 3*(self.hTile+2*self.margin)/4
         self.xOff = (self.wTile+self.margin)/2
 
         self.zoomlimit=self.wTile
 
-        self.tile_size=(self.wTile,self.hTile)
-        self.number_size=(self.wTile/3,self.hTile/3)
-        self.road_size=(self.margin,self.wTile/2)
-        self.dice_size=(50,50)
+
+        self.dice_size=(self.wTile/2,self.wTile/2)
+
+        self.settlement_size = (self.wTile/2+3*self.margin/4,self.H/6+self.margin)
+
+        self.panel_size = (4*self.W/10, self.H/5)
+        self.slim_panel_size = (3*self.W/10, self.H/8)
+        self.long_panel_size = (6*self.W/10, self.H/5)
+
+        self.card_size = ( (self.panel_size[0]-8*self.margin)/6,self.panel_size[1]-4*self.margin)
 
         self.d1=1
         self.d2=1
+
+        self.elem = []
+        self.panels = []
 
 
     def handleEvent(self, event):
@@ -64,36 +75,38 @@ class boardpage():
 
     def draw(self):
         self.drawBoard()
-        print("draw")
+        #print("draw")
         pass
         #START DRAWING
 
     def initTiles(self):
+        self.tile_size = (self.wTile, self.hTile) #(w,h)
+
         self.sea = pygame.image.load("./client/gui/assets/tiles/sea.png")
-        self.sea = pygame.transform.scale(self.sea, self.tile_size)
+        self.sea = pygame.transform.smoothscale(self.sea, self.tile_size)
         self.tilemask = pygame.mask.from_surface(self.sea)
 
         self.desert = pygame.image.load("./client/gui/assets/tiles/desert.png")
-        self.desert = pygame.transform.scale(self.desert, self.tile_size)
+        self.desert = pygame.transform.smoothscale(self.desert, self.tile_size)
 
         self.brick = pygame.image.load("./client/gui/assets/tiles/brick.png")
-        self.brick = pygame.transform.scale(self.brick, self.tile_size)
+        self.brick = pygame.transform.smoothscale(self.brick, self.tile_size)
 
         self.grain = pygame.image.load("./client/gui/assets/tiles/grain.png")
-        self.grain = pygame.transform.scale(self.grain, self.tile_size)
+        self.grain = pygame.transform.smoothscale(self.grain, self.tile_size)
 
         self.lumber = pygame.image.load("./client/gui/assets/tiles/lumber.png")
-        self.lumber = pygame.transform.scale(self.lumber, self.tile_size)
+        self.lumber = pygame.transform.smoothscale(self.lumber, self.tile_size)
 
         self.ore = pygame.image.load("./client/gui/assets/tiles/ore.png")
-        self.ore = pygame.transform.scale(self.ore, self.tile_size)
+        self.ore = pygame.transform.smoothscale(self.ore, self.tile_size)
 
         self.wool = pygame.image.load("./client/gui/assets/tiles/wool.png")
-        self.wool = pygame.transform.scale(self.wool, self.tile_size)
-
-
+        self.wool = pygame.transform.smoothscale(self.wool, self.tile_size)
 
     def initNumbers(self):
+        self.number_size = (self.wTile/3,self.hTile/3)
+
         self.one = pygame.image.load("./client/gui/assets/numbers/one.png")
         self.one = pygame.transform.scale(self.one, self.number_size)
 
@@ -142,8 +155,133 @@ class boardpage():
             tile.numsurface = self.num_list[tile.num]
 
     def initItems(self):
-        #TODO
+        #Settlements
+        loadedSettlement = pygame.image.load('./client/base_gui/assets/general/settlement.png')
+
+
+
+        self.initBuy()
+        self.initBank()
+        self.initHand()
+
+        #mockups
+        pygame_gui.elements.UIPanel(relative_rect=pygame.Rect((7*self.W/10 - self.margin, 2*self.H/5 + 16*self.margin),
+                                                                        self.slim_panel_size),
+                                                        starting_layer_height = 1,
+                                                        manager = self.manager)
+
+        pygame_gui.elements.UIPanel(relative_rect=pygame.Rect((7*self.W/10 - self.margin, 2*self.H/5 + self.slim_panel_size[1] + 18*self.margin),
+                                                                        self.slim_panel_size),
+                                                        starting_layer_height = 1,
+                                                        manager = self.manager)
+
+        self.hidePanel()
         pass
+
+    def initBuy(self):
+        movingW = self.margin
+        singleW = self.settlement_size[0]
+        self.buyPanel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect((7*self.W/10 - self.margin, 12*self.margin),
+                                                                        self.panel_size),
+                                                        starting_layer_height = 1,
+                                                        manager = self.manager)
+        settlement_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((movingW, self.margin), self.settlement_size),
+                                                    text="",
+                                                    object_id ="#settlement",
+                                                    container = self.buyPanel,
+                                                    manager=self.manager)
+
+        movingW += singleW + self.margin
+        city_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((movingW, self.margin), self.settlement_size),
+                                                    text="",
+                                                    object_id ="#city",
+                                                    container = self.buyPanel,
+                                                    manager=self.manager)
+
+        movingW += singleW + self.margin
+        road_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((movingW, self.margin), self.settlement_size),
+                                                    text="",
+                                                    object_id ="#road",
+                                                    container = self.buyPanel,
+                                                    manager=self.manager)
+
+        movingW += singleW + self.margin
+        spec_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((movingW, self.margin), self.settlement_size),
+                                                    text="",
+                                                    object_id ="#spec",
+                                                    container = self.buyPanel,
+                                                    manager=self.manager)
+
+        movingW += singleW + self.margin
+        skip_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((movingW, self.margin), (3*self.settlement_size[0]/4+5, self.settlement_size[1])),
+                                                    text="",
+                                                    object_id ="#skip",
+                                                    container = self.buyPanel,
+                                                    manager=self.manager)
+
+        self.panels.append(self.buyPanel)
+
+    def initBank(self):
+        movingW = self.margin
+        singleW = self.card_size[0]
+
+        self.bankPanel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect((6*self.W/10 - self.margin, 1*self.H/5 + 14*self.margin),
+                                                                        self.panel_size),
+                                                        starting_layer_height = 1,
+                                                        manager = self.manager)
+        self.panels.append(self.bankPanel)
+
+        imgBank = pygame.image.load("./client/base_gui/assets/general/bank.png")
+        self.bankIco = pygame_gui.elements.UIImage(relative_rect=pygame.Rect((movingW, self.margin), self.card_size),
+                                                    image_surface = imgBank,
+                                                    container = self.bankPanel,
+                                                    manager=self.manager)
+
+        movingW += singleW + self.margin
+        imgLumber = pygame.image.load("./client/base_gui/assets/cards/lumber.png")
+        self.lumberIco = pygame_gui.elements.UIImage(relative_rect=pygame.Rect((movingW, self.margin), self.card_size),
+                                                    image_surface = imgLumber,
+                                                    container = self.bankPanel,
+                                                    manager=self.manager)
+
+        movingW += singleW + self.margin
+        imgBrick = pygame.image.load("./client/base_gui/assets/cards/brick.png")
+        self.lumberIco = pygame_gui.elements.UIImage(relative_rect=pygame.Rect((movingW, self.margin), self.card_size),
+                                                    image_surface = imgBrick,
+                                                    container = self.bankPanel,
+                                                    manager=self.manager)
+
+        movingW += singleW + self.margin
+        imgWool = pygame.image.load("./client/base_gui/assets/cards/wool.png")
+        self.lumberIco = pygame_gui.elements.UIImage(relative_rect=pygame.Rect((movingW, self.margin), self.card_size),
+                                                    image_surface = imgWool,
+                                                    container = self.bankPanel,
+                                                    manager=self.manager)
+
+        movingW += singleW + self.margin
+        imgGrain = pygame.image.load("./client/base_gui/assets/cards/grain.png")
+        self.lumberIco = pygame_gui.elements.UIImage(relative_rect=pygame.Rect((movingW, self.margin), self.card_size),
+                                                    image_surface = imgGrain,
+                                                    container = self.bankPanel,
+                                                    manager=self.manager)
+
+        movingW += singleW + self.margin
+        imgOre = pygame.image.load("./client/base_gui/assets/cards/ore.png")
+        self.lumberIco = pygame_gui.elements.UIImage(relative_rect=pygame.Rect((movingW, self.margin), self.card_size),
+                                                    image_surface = imgOre,
+                                                    container = self.bankPanel,
+                                                    manager=self.manager)
+
+
+
+    def initHand(self):
+
+        self.handPanel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect((4*self.W/10 - self.margin, 4*self.H/5 - 2*self.margin),
+                                                                        self.long_panel_size),
+                                                        starting_layer_height = 1,
+                                                        manager = self.manager)
+        self.panels.append(self.handPanel)
+
 
     def initDices(self):
         self.done = pygame.image.load("./client/gui/assets/dices/one.png")
@@ -208,6 +346,23 @@ class boardpage():
             }
         }
 
+    def enable(self):
+        for pa in self.panels:
+            pa.show()
+
+
+    def hide(self):
+        for el in self.elem:
+            el.hide()
+
+        self.screen.blit(self.bg, (0, 0))
+
+    def hidePanel(self):
+        for panel in self.panels:
+            panel.hide()
+
+        self.screen.blit(self.bg, (0, 0))
+
     def drawBoard(self):
         for tile in self.gameBoard.tiles:
             self.screen.blit(self.surfaceDict[tile.type], (tile.tilerect[0],tile.tilerect[1]))
@@ -215,6 +370,9 @@ class boardpage():
             y_num = tile.tilerect[1] + tile.tilerect[3]/10
             if tile.type != Resources.DESERT:
                 self.screen.blit(self.num_list[tile.num],(x_num,y_num))
+
+
+
 
 
 class BuyType(Enum):
